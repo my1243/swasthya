@@ -34,11 +34,29 @@ let name,value;
     value = e.target.value;
     setSingleMed({...singleMed,[name]:value});
   }
+
+  const postData = async (e) => {
+    e.preventDefault();
+    const res = await fetch("/searchUser", {
+        method:"POST",
+        headers:{
+            "Content-Type":"Application/json"
+        },
+        body:JSON.stringify({idx})
+    });
+    const data = await res.json();
+    if(res.status === 422 || !data){
+        console.log("Invalid details");
+    }else{
+        setUser(data);
+    }
+  }
   return (
     <>
       <div className="m-4">
         <div className="h-16 flex mb-2 flex-row items-center gap-x-4 justify-center bg-gray-100 rounded-lg">
           <h3 className="text-xl">Search with patient's ID</h3>
+          <form onSubmit={postData}>
           <input
             type={"text"}
             id="ID"
@@ -47,11 +65,32 @@ let name,value;
             onChange={(e) => setidx(e.target.value)}
             className="px-2 py-1 rounded-md focus:outline-none"
           />
+          </form>
+          <i onClick={postData} class="fa-solid fa-magnifying-glass bg-emerald-400 p-2 rounded-lg"></i>
         </div>
 
         <div className="h-60 flex justify-center items-center border rounded-lg">
           {Object.keys(user).length > 0 ? (
-            <></>
+            <>
+                <div className="flex">
+                    <div>
+                        <h1>Name</h1>
+                        <h1>{user.fname} {user.lname}</h1>
+                    </div>
+                    <div>
+                        <h1>Age</h1>
+                        <h1>{user.age}</h1>
+                    </div>
+                    <div>
+                        <h1>Blood Group</h1>
+                        <h1>{user.bgroup}</h1>
+                    </div>
+                    <div>
+                        <h1>Gender</h1>
+                        <h1>{user.gender}</h1>
+                    </div>
+                </div>
+            </>
           ) : (
             <Link to="/new-patient" className="p-2 bg-blue-600 my-2 text-white rounded-lg">Create new Patient</Link>
           )}
