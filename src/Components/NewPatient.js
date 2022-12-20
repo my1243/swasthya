@@ -2,9 +2,16 @@ import { useEffect, useState } from "react";
 
 const NewPatient = () => {    
     const [user,setUser] = useState({
+        fname:"",
+        lname:"",
         email:"",
         password:"",
-        captcha:""
+        cpassword:"",
+        mobile:"",
+        bgroup:"",
+        address:"",
+        gender:"M",
+        age:""
     });
     
     let name,value;
@@ -13,6 +20,33 @@ const NewPatient = () => {
         name = e.target.name;
         value = e.target.value;
         setUser({ ...user, [name]: value });
+    }
+
+    const postData = async (e) => {
+        e.preventDefault();
+        const password = e.password;
+        const cpassword = e.cpassword;
+        if(password === cpassword){
+            const {fname,lname,email,password,mobile,bgroup,address,gender,age} = user;
+            const res = await fetch("/patSignup", {
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body: JSON.stringify({
+                    fname, lname, email, password, mobile, bgroup, address, gender, age
+                })
+            });
+            const data = await res.json();
+            if(res.status === 422 || !data){
+                console.log("Invalid Data");
+
+            }  else{
+                console.log("data stored successfully");
+            }
+        }else{
+            window.alert("password and confirm password does not match!!!");
+        }
     }
 
     return (
@@ -32,15 +66,27 @@ const NewPatient = () => {
               </h1>
               <p className="text-center">Create a new account and join with us. It's completely free</p>
               <form className="mt-6">
+              <div className="flex gap-x-4">
                 <input
                   className="w-full mb-4 outline-none border border-emerald-500 p-2 rounded-lg"
                   type={"text"}
-                  id="name"
-                  name="name"
-                  value={user.name}
+                  id="fname"
+                  name="fname"
+                  value={user.fname}
                   onChange={handleInputs}
-                  placeholder="enter your name"
+                  placeholder="first name"
                 />
+
+                <input
+                  className="w-full mb-4 outline-none border border-emerald-500 p-2 rounded-lg"
+                  type={"text"}
+                  id="lname"
+                  name="lname"
+                  value={user.lname}
+                  onChange={handleInputs}
+                  placeholder="last name"
+                />
+              </div>
                 <input
                   className="w-full mb-4 outline-none border border-emerald-500 p-2 rounded-lg"
                   type={"text"}
@@ -59,38 +105,59 @@ const NewPatient = () => {
                   onChange={handleInputs}
                   placeholder="password"
                 />
-                <div>
                 <input
                   className="w-full mb-4 outline-none border border-emerald-500 p-2 rounded-lg"
+                  type={"password"}
+                  id="cpassword"
+                  name="cpassword"
+                  value={user.cpassword}
+                  onChange={handleInputs}
+                  placeholder="confirm password"
+                />
+                <div className="flex gap-x-4 mb-4">
+                <input
+                  className="w-full outline-none border border-emerald-500 p-2 rounded-lg"
                   type={"text"}
                   id="mobile"
                   name="mobile"
                   value={user.mobile}
                   onChange={handleInputs}
-                  placeholder="moible no"
+                  placeholder="mobile no"
                 />
-                {/* <input type={"choice"}/> */}
-                <select value={"B+ve"}/>
-                <select value={"B+ve"}/>
-                <select value={"B+ve"}/>
-                <select value={"B+ve"}/>
-                <select value={"B+ve"}/>
-                </div>
                 <input
-                  className="w-full my-4 outline-none border border-emerald-500 p-2 rounded-lg"
+                  className="w-full outline-none border border-emerald-500 p-2 rounded-lg"
                   type={"text"}
-                  id="captcha"
-                  name="captcha"
-                  value={user.captcha}
+                  id="bgroup"
+                  name="bgroup"
+                  value={user.bgroup}
                   onChange={handleInputs}
-                  placeholder="Captcha"
+                  placeholder="blood group"
                 />
-              </form>
+                <input
+                  className="w-full outline-none border border-emerald-500 p-2 rounded-lg"
+                  type={"Number"}
+                  id="age"
+                  name="age"
+                  value={user.age}
+                  onChange={handleInputs}
+                  placeholder="1"
+                />
+                
+                </div>
+                <textarea className="w-full rounded-lg focus:outline-none border-emerald-500 p-2" placeholder="Address" name="address" id="address" value={user.address} onChange={handleInputs}/>
+                <div>
+                    <input type={"radio"} name="gender" id="gender" value={"M"} onChange={handleInputs}></input>
+                    <label className="ml-1 mr-4">Male</label>
+                    <input type={"radio"} name="gender" id="gender" value={"F"} onChange={handleInputs}></input>
+                    <label className="ml-1">Female</label>
+                </div>
               <button
+              onClick={postData}
                 className="p-2 w-full mb-4 text-center bg-[#e64b09] hover:bg-emerald-400 text-white font-medium rounded-md transition-colors duration-300 ease-linear mt-4"
               >
-                Sign In
+                Create Account!
               </button>
+              </form>
             </div>
           </div>
         </div>
