@@ -3,6 +3,7 @@ const router = express.Router();
 require("../db/conn");
 const Patient = require("../models/Patient");
 const Resource = require("../models/Resource");
+const transporter = require("../middlewares/Mailing");
 
 router.get("/", (req,res) => {
     res.send("Hello hiya router");
@@ -43,6 +44,20 @@ router.post("/patSignup", async (req,res) => {
             });
             const data = await patient.save();
             if(data){
+                var mailOptions = {
+                    from : '"Swasthya 24/7" <mihiryarra@gmail.com',
+                    to: email,
+                    subject:'Nice nodemailer test',
+                    text:'hey there, its first message sent using nodemailer',
+                    html:'<b>Hey there</b><br>'
+                }
+
+                transporter.sendMail(mailOptions, (err,info) => {
+                    if(err){
+                        return console.log(err);
+                    }
+                    console.log(`Message sent ${info.messageId}`);
+                });
                 res.status(201).json({ message: "data stored successfully" });
             }
         }

@@ -6,7 +6,6 @@ const UserSearch = () => {
   const [medicineSearch, setMedicineSearch] = useState("");
   const [singleMed,setSingleMed] = useState({
     name:"",
-    quantity:"",
     morning:false,
         afternoon:false,
         evening: false,
@@ -69,25 +68,26 @@ let name,value;
           <i onClick={postData} class="fa-solid fa-magnifying-glass bg-emerald-400 p-2 rounded-lg"></i>
         </div>
 
-        <div className="h-60 flex justify-center items-center border rounded-lg">
+        <div className="border rounded-lg p-4">
           {Object.keys(user).length > 0 ? (
             <>
-                <div className="flex">
-                    <div>
-                        <h1>Name</h1>
-                        <h1>{user.fname} {user.lname}</h1>
+            <h1 className="text-2xl text-emerald-700 font-bold mb-2">Patient details</h1>
+                <div className="flex items-center justify-between ">
+                    <div className="flex gap-x-2">
+                        <h1 className="text-lg font-semibold">Name:</h1>
+                        <h1 className="text-lg text-red-500 font-medium">{user.fname} {user.lname}</h1>
                     </div>
-                    <div>
-                        <h1>Age</h1>
-                        <h1>{user.age}</h1>
+                    <div className="flex gap-x-2">
+                        <h1 className="text-lg font-semibold">Age:</h1>
+                        <h1 className="text-lg text-red-500 font-medium">{user.age}</h1>
                     </div>
-                    <div>
-                        <h1>Blood Group</h1>
-                        <h1>{user.bgroup}</h1>
+                    <div className="flex gap-x-2">
+                        <h1 className="text-lg font-semibold">Blood Group:</h1>
+                        <h1 className="text-lg text-red-500 font-medium">{user.bgroup}</h1>
                     </div>
-                    <div>
-                        <h1>Gender</h1>
-                        <h1>{user.gender}</h1>
+                    <div className="flex gap-x-2">
+                        <h1 className="text-lg font-semibold">Gender:</h1>
+                        <h1 className="text-lg text-red-500 font-medium">{user.gender}</h1>
                     </div>
                 </div>
             </>
@@ -195,7 +195,7 @@ let name,value;
                 <input type={"radio"} name="be/af" />
                 <label>After</label>
               </div>
-              <button onClick={() => setMedicinesPres({...MedicinesPres})} className="w-20 p-2 bg-blue-600 my-2 text-white rounded-lg">
+              <button onClick={() => setMedicinesPres(...MedicinesPres,MedicinesPres.Prescription.concat(singleMed))} className="w-20 p-2 bg-blue-600 my-2 text-white rounded-lg">
                 Add
               </button>
             </div>
