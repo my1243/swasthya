@@ -49,7 +49,25 @@ router.post("/patSignup", async (req,res) => {
                     to: email,
                     subject:'Nice nodemailer test',
                     text:'hey there, its first message sent using nodemailer',
-                    html:'<b>Hey there</b><br>'
+                    html:`<div style="display: flex; flex-direction: column;height: 20rem; background-color: rgb(255, 21, 255); color: white; padding: 1rem; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+                    <div>Thank you for registering with Swasthya... We are always ready to to serve you well.</div>
+                    <div>We are providing your user credentials to login on our Android/IOS application.</div>
+                    <br/>
+                    <div>
+                        <span>Patient ID: </span>
+                        <span>${x}</span>
+                    </div>
+                    <div>
+                        <span>Username: </span>
+                        <span>${email}</span>
+                    </div>
+                    <div>
+                        <span>Password: </span>
+                        <span>${password}</span>
+                    </div>
+                </br>
+                    <div>Kindly login with these details to view your profile.</div>
+                </div>`
                 }
 
                 transporter.sendMail(mailOptions, (err,info) => {
