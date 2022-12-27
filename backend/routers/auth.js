@@ -4,6 +4,8 @@ require("../db/conn");
 const Patient = require("../models/Patient");
 const Resource = require("../models/Resource");
 const transporter = require("../middlewares/Mailing");
+const bcrypt = require("bcryptjs");
+const authenticate = require("../middlewares/Authenticate");
 
 router.get("/", (req,res) => {
     res.send("Hello hiya router");
@@ -47,27 +49,8 @@ router.post("/patSignup", async (req,res) => {
                 var mailOptions = {
                     from : '"Swasthya 24/7" <mihiryarra@gmail.com',
                     to: email,
-                    subject:'Nice nodemailer test',
-                    text:'hey there, its first message sent using nodemailer',
-                    html:`<div style="display: flex; flex-direction: column;height: 20rem; background-color: rgb(255, 21, 255); color: white; padding: 1rem; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-                    <div>Thank you for registering with Swasthya... We are always ready to to serve you well.</div>
-                    <div>We are providing your user credentials to login on our Android/IOS application.</div>
-                    <br/>
-                    <div>
-                        <span>Patient ID: </span>
-                        <span>${x}</span>
-                    </div>
-                    <div>
-                        <span>Username: </span>
-                        <span>${email}</span>
-                    </div>
-                    <div>
-                        <span>Password: </span>
-                        <span>${password}</span>
-                    </div>
-                </br>
-                    <div>Kindly login with these details to view your profile.</div>
-                </div>`
+                    subject:'User Credentials for Swasthya',
+                    text:`Thank you for registering with Swasthya... We are always ready to to serve you well.\nWe are providing your user credentials to login on our Android/IOS application.\n\nPatient ID: ${x}\nUsername: ${email}\nPassword: ${password}`
                 }
 
                 transporter.sendMail(mailOptions, (err,info) => {
@@ -94,6 +77,40 @@ router.post("/searchUser", async (req,res) => {
         }else{
             res.status(422).json({"error":"Invalid credentials"});
         }
+    }catch(err){
+        console.log(err);
+    }
+})
+
+router.post('/login', async (req,res) => {
+    console.log("hi");
+    try{
+        const pid = req.body.PatientID;
+        const pass = req.body.password1;
+        if(!pid || !pass){
+            return res.status(400).json({error : "Plz fill all details correctly"});
+        }
+
+        const PatientExists = await Patient.findOne({pid:pid});
+        if(PatientExists){
+            const isMatch = await bcrypt.compare(pass,PatientExists.password);
+            const token = await PatientExists.generateAuthToken();
+            console.log(token);
+
+            res.cookie("jwtoken", token, {
+                expires: new Date(Date.now() + 1296000000),
+                httpOnly:true
+            })
+
+            if(!isMatch){
+                res.status(400).json({error: "Invalid"});
+            }else{
+                res.status(201).json(PatientExists);
+            }
+        }else{
+            res.status(400).json({error: "Invalid details"});
+        }
+        console.log(PatientExists);
     }catch(err){
         console.log(err);
     }

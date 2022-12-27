@@ -4,6 +4,8 @@ import {
     Route,
     Outlet,
   } from "react-router-dom";
+import CheckAppointment from "./Components/Admin/CheckAppointment";
+import SignIn from "./Components/Admin/SignIn";
 import Home from "./Components/Home";
 import Navbar from "./Components/Navbar";
 import NewPatient from "./Components/NewPatient";
@@ -14,6 +16,15 @@ const App = () => {
         <>
             <Router>
                 <Routes>
+                    <Route path="/connect-admin" element={<SignIn/>} />
+                <Route element={
+                    <>
+                    <Navbar/>
+                    <Outlet/>
+                    </>
+                }>
+                    <Route path="/connect-admin/check-appointment" element={<CheckAppointment/>}/>
+                </Route>
                     <Route element={
                         <>
                             <Navbar/>

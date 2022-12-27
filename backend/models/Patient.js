@@ -1,5 +1,6 @@
 const bcrypt = require("bcryptjs");
 const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
 
 const patientSchema = new mongoose.Schema({
     PID:{
@@ -59,6 +60,17 @@ patientSchema.pre("save", async function(next){
     }
     next();
 })
+
+patientSchema.methods.generateAuthToken = async function () {
+    try{
+        let token = jwt.sign({_id:this._id}, process.env.SECRET_KEY);
+        this.tokens = this.tokens.concat({token:token});
+        await this.save();
+        return token;
+    }catch(err){
+        console.log(err);
+    }
+}
 
 const Patient = new mongoose.model("Patient",patientSchema);
 module.exports= Patient;

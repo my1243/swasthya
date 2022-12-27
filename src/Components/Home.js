@@ -27,7 +27,7 @@ const Home = () => {
     const submit_form = () => {
         if (validateCaptcha(user.captcha, false) == true) {
             // alert("Captcha Matched");
-            window.location = "/";
+            window.location = "/user-search";
         } else {
             alert("Captcha Does Not Match");
             loadCaptchaEnginge(6, "#d1d5db", "red");
