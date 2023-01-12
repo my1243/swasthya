@@ -24,10 +24,28 @@ const Home = () => {
         setUser({ ...user, [name]: value });
     }
     
-    const submit_form = () => {
+    const submit_form = async (e) => {
+        e.preventDefault();
         if (validateCaptcha(user.captcha, false) == true) {
             // alert("Captcha Matched");
-            window.location = "/user-search";
+            try{
+                const {email, password} = user;
+                const res = await fetch("/doctlogin", {
+                    method:"POST",
+                    headers:{
+                        "Content-Type":"Application/json"
+                    },
+                    body:JSON.stringify({email, password})
+                })
+                const data = await res.json();
+                if(res.status === 422 || !data){
+                    console.log("error");
+                }else{
+                    window.location = "/user-search";
+                }
+            }catch(err){
+                console.log(err);
+            }
         } else {
             alert("Captcha Does Not Match");
             loadCaptchaEnginge(6, "#d1d5db", "red");
