@@ -6,6 +6,11 @@ const Resource = require("../models/Resource");
 const transporter = require("../middlewares/Mailing");
 const bcrypt = require("bcryptjs");
 const authenticate = require("../middlewares/Authenticate");
+const randomString = require("randomstring");
+const Prescription = require("../models/Prescription");
+const Appointment = require("../models/Appointment");
+const Doctor = require("../models/Doctor");
+const Admin = require("../models/Admin");
 
 router.get("/", (req,res) => {
     res.send("Hello hiya router");
@@ -25,8 +30,8 @@ router.get("/", (req,res) => {
 
 router.post("/patSignup", async (req,res) => {
     console.log("mihir");
-    const {fname, lname, email, password, bgroup, gender, address, mobile, age} = req.body;
-    if(!fname || !lname || !email || !password || !bgroup || !gender || !address || !mobile || !age){
+    const {fname, lname, email, bgroup, gender, address, mobile, age} = req.body;
+    if(!fname || !lname || !email || !bgroup || !gender || !address || !mobile || !age){
         return res.status(422).json({error: "Please enter all fields"});
     }
     try{
@@ -34,6 +39,7 @@ router.post("/patSignup", async (req,res) => {
         if(PatientExists){
             return res.status(422).json({ error: "Email already exist" });
         }else{
+            let password = randomString.generate(10);
             let x = new Date().getFullYear().toString().substr(2,2) + "PS";
             const getRes = await Resource.findOne({ID : "2022"});
             x+=getRes.init_var;
@@ -47,10 +53,63 @@ router.post("/patSignup", async (req,res) => {
             const data = await patient.save();
             if(data){
                 var mailOptions = {
-                    from : '"Swasthya 24/7" <mihiryarra@gmail.com',
+                    from : '"Swasthya 24/7" <customer.swasthya@gmail.com>',
                     to: email,
                     subject:'User Credentials for Swasthya',
                     text:`Thank you for registering with Swasthya... We are always ready to to serve you well.\nWe are providing your user credentials to login on our Android/IOS application.\n\nPatient ID: ${x}\nUsername: ${email}\nPassword: ${password}`
+                }
+
+                transporter.sendMail(mailOptions, (err,info) => {
+                    if(err){
+                        return console.log(err);
+                    }
+                    console.log(`Message sent ${info.messageId}`);
+                });
+                res.status(201).json({ message: "data stored successfully" });
+            }
+        }
+    }catch(err){
+        console.log(err);
+    }
+})
+
+router.post("/doctSignup", async (req,res) => {
+    console.log("mihir");
+    const {fname, lname, email, mobile, education, post, ig, ln} = req.body;
+    if(!fname || !lname || !email || !mobile || !education || !post){
+        return res.status(422).json({error: "Please enter all required fields"});
+    }
+    try{
+        const doctorExists = await Doctor.findOne({email: email});
+        if(doctorExists){
+            return res.status(422).json({ error: "Email already exist" });
+        }else{
+            let password = randomString.generate(10);
+            let doctor;
+            if(ig){
+            doctor = new Doctor({
+                fname, lname, email, password, mobile, education, post, ig  
+            });
+        }else if(ln){
+            doctor = new Doctor({
+                fname, lname, email, password, mobile, education, post, ln  
+            });
+        }else if(ig && ln){
+            doctor = new Doctor({
+                fname, lname, email, password, mobile, education, post,ig,ln  
+            });
+        }else{
+            doctor = new Doctor({
+                fname, lname, email, password, mobile, education, post  
+            });
+        }
+            const data = await doctor.save();
+            if(data){
+                var mailOptions = {
+                    from : '"Swasthya 24/7" <customer.swasthya@gmail.com>',
+                    to: email,
+                    subject:'User Credentials for Swasthya',
+                    text:`Thank you for joining with Swasthya... We are always ready to serve you well.\nWe are providing your user credentials to login on our Web Portal\n\Username ${email}\nPassword: ${password}`
                 }
 
                 transporter.sendMail(mailOptions, (err,info) => {
@@ -115,5 +174,122 @@ router.post('/login', async (req,res) => {
         console.log(err);
     }
 })
+
+router.post('/doctlogin', async (req,res) => {
+    console.log("hi");
+    try{
+        const email = req.body.email;
+        const password = req.body.password;
+        if(!email || !password){
+            return res.status(400).json({error : "Plz fill all details correctly"});
+        }
+
+        const doctorExists = await Patient.findOne({email:email});
+        if(doctorExists){
+            const isMatch = await bcrypt.compare(password,doctorExists.password);
+            const token = await doctorExists.generateAuthToken();
+            console.log(token);
+
+            res.cookie("djwtoken", token, {
+                expires: new Date(Date.now() + 1296000000),
+                httpOnly:true
+            })
+
+            if(!isMatch){
+                res.status(400).json({error: "Invalid"});
+            }else{
+                res.status(201).json(doctorExists);
+            }
+        }else{
+            res.status(400).json({error: "Invalid details"});
+        }
+        console.log(doctorExists);
+    }catch(err){
+        console.log(err);
+    }
+})
+
+router.post("/adminlog", async (req,res) => {
+    console.log("hjd");
+    try{
+        const {email,password} = req.body;
+        if(!email || !password){
+            res.status(422).json({msg:"error"});
+        }
+        const adExists = await Admin.findOne({email:email});
+        if(adExists){
+            const isMatch = await bcrypt.compare(password,adExists.password);
+            const token = await adExists.generateAuthToken();
+            console.log(token);
+
+            res.cookie("ajwtoken", token, {
+                expires: new Date(Date.now() + 1296000000),
+                httpOnly:true
+            })
+
+            if(!isMatch){
+                res.status(400).json({error: "Invalid"});
+            }else{
+                res.status(201).json(adExists);
+            }
+        }else{
+            res.status(400).json({error: "Invalid details"});
+        }
+        console.log(adExists);
+    }catch(err){
+        console.log(err);
+    }
+})
+
+router.post("/prescribe",async (req,res) => {
+    console.log("hi");
+    try{
+        const {PID, fname, lname, prescription} = req.body;
+        const userExist = await Prescription.findOne({PID});
+        if(userExist){
+            const data = await Prescription.findOneAndUpdate({PID}, {$push: {"prescription" : prescription}});
+            if(data){
+                res.status(201).json({msg:"Updated successfully"});
+            }
+        }else{
+            const newPres = new Prescription({PID, fname, lname, prescription});
+            const data = await newPres.save();
+            if(data){
+                res.status(201).json({msg:"Created successfully"});
+            }
+        }
+    }catch(err){
+        res.status(400).json({msg:"error"});
+        console.log(err);
+    }
+})
+
+router.post("/bookapp", async (req,res) => {
+    console.log("hi");
+    try{
+    const {PID,fname,lname,date,time} = req.body;
+    const uExists = await Appointment.findOne({date});
+    const obj = {PID:PID,fname:fname, lname:lname,time:time};
+    if(uExists){
+        if(uExists.aval === 0){
+            res.status(400).json({msg:"Appointment quota full!"});
+        }else{
+            const data = await Appointment.findOneAndUpdate({date}, {aval:uExists.aval-1, $push :{patient: obj}});
+            if(data){
+                res.status(201).json({msg:"Updated successfully"});
+            }
+        }
+    }else{
+        const newAppointment = new Appointment({date, aval:60, patient:obj});
+        const data = await newAppointment.save();
+        if(data){
+            res.status(201).json({msg:"created successfully"});
+        }
+    }
+    }catch(err){
+        res.status(404).json({msg:"Error"});
+        console.log(err);
+    }
+ })
 
 module.exports = router;
