@@ -1,3 +1,4 @@
+import "./App.css";
 import {
     BrowserRouter as Router,
     Routes,
@@ -15,8 +16,11 @@ import Home from "./Components/Home";
 import Navbar from "./Components/Navbar";
 import NewPatient from "./Components/Admin/NewPatient";
 import UserSearch from "./Components/UserSearch";
+import { useState } from "react";
 
 const App = () => {
+    const [doct,setDoct] = useState({});
+    // const [isLogin, setisLogin] = useState(false);
     return(
         <>
             <Router>
@@ -39,11 +43,11 @@ const App = () => {
                     <Route path="/connect-admin" element={<SignIn/>} />
                     <Route element={
                         <>
-                            <Navbar/>
+                            <Navbar doct={doct} />
                             <Outlet/>
                         </>
                     }>
-                        <Route path="/" element={<Home/>} />
+                        <Route path="/" element={<Home setDoct={setDoct}/>} />
                         <Route path="/user-search" element={<UserSearch/>} />
                     </Route>
                     <Route path="/sidebar" element={<Slidebar/>}/>

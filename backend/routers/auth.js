@@ -28,6 +28,11 @@ router.get("/", (req,res) => {
 //     // console.log(data);
 // })
 
+router.get("/logged", authenticate, (req,res) => {
+    console.log("hello from logged");
+    res.send(req.rootUser);
+})
+
 router.post("/patSignup", async (req,res) => {
     console.log("mihir");
     const {fname, lname, email, bgroup, gender, address, mobile, age} = req.body;
@@ -184,13 +189,13 @@ router.post('/doctlogin', async (req,res) => {
             return res.status(400).json({error : "Plz fill all details correctly"});
         }
 
-        const doctorExists = await Patient.findOne({email:email});
+        const doctorExists = await Doctor.findOne({email:email});
         if(doctorExists){
             const isMatch = await bcrypt.compare(password,doctorExists.password);
             const token = await doctorExists.generateAuthToken();
             console.log(token);
 
-            res.cookie("djwtoken", token, {
+            res.cookie("jwtoken", token, {
                 expires: new Date(Date.now() + 1296000000),
                 httpOnly:true
             })
@@ -222,7 +227,7 @@ router.post("/adminlog", async (req,res) => {
             const token = await adExists.generateAuthToken();
             console.log(token);
 
-            res.cookie("ajwtoken", token, {
+            res.cookie("jwtoken", token, {
                 expires: new Date(Date.now() + 1296000000),
                 httpOnly:true
             })
@@ -291,5 +296,26 @@ router.post("/bookapp", async (req,res) => {
         console.log(err);
     }
  })
+
+ router.post("/getLatestPrescription", async (req,res) => {
+    console.log("kjdhgf");
+    try{
+        const PID = req.body.PID;
+        console.log(PID);
+        const data = await Prescription.findOne({PID});
+        if(data){
+            res.status(201).json(data.prescription[data.prescription.length-1]);
+        }else{
+            res.status(422).json({msg:"invalid patient id"});
+        }
+    }catch(err){
+        console.log(err);
+    }
+ })
+
+ router.get("/logout", (req, res) => {
+    res.clearCookie("jwtoken", { path: "/" });
+    res.status(200).send("user logout");
+  });
 
 module.exports = router;

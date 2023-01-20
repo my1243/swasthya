@@ -1,6 +1,41 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+// import authenticate from "../functions/authenticate";
 
-const Navbar = () => {
+const Navbar = (props) => {
+    const [user,setUser] = useState({});
+    const [flag,setFlag] = useState(false);
+
+
+    const authenticate = async () => {
+        try{
+            const res = await fetch("/logged", {
+                method:"GET",
+                headers:{
+                    "Content-Type":"Application/json",
+                    "Accept": "Application/json"
+                },
+                body:JSON.stringify({type:"Doctor"}),
+                credentials:"include",
+            });
+    
+            const data = await res.json();
+            if(data){
+                // setUser(data);
+                window.location="/user-search";
+            }
+            if(res.status === 400){
+                throw new Error("credentials not matched");
+            }
+        }catch(err){
+            console.log(err);
+            window.location = "/";
+        }
+    }
+    // useEffect(() => {
+    //     authenticate();
+    // },[props.doct]);
+
     return(
         <>
             <header class="text-gray-600 body-font">
@@ -14,11 +49,33 @@ const Navbar = () => {
     </Link>
     </div>
     <div>
-    <button class="inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base mt-4 md:mt-0">Sign In
-      <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 ml-1" viewBox="0 0 24 24">
-        <path d="M5 12h14M12 5l7 7-7 7"></path>
-      </svg>
+    { Object.keys(props.doct).length > 0 ? 
+        <div className="flex flex-row items-center justify-center">
+            <div className="h-12 w-12 rounded-full overflow-hidden m-2">
+              <img src="/images/avatar.jpg" />
+            </div>
+            <li className="dropdown mr-8">
+              <div className="hover:cursor-pointer">
+                <h1 className="font-medium text-md">
+                  {props.doct.fname} {props.doct.lname}
+                </h1>
+                <h3 className="font-medium text-slate-600 text-sm">
+                  {props.doct.email}
+                </h3>
+              </div>
+              <div class="dropdown-content">
+                <Link to="/portfolio">Dashboard</Link>
+                <Link to="/portfolio/view-profile">View Profile</Link>
+                <Link to="/portfolio/edit-profile">Edit Profile</Link>
+                <Link to="/">Logout</Link>
+              </div>
+            </li>
+          </div> :
+          <button class="inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base mt-4 md:mt-0">Sign In
+    <i class="ml-2 fa-solid fa-arrow-right"></i>
     </button>
+    }
+    
     </div>
   </div>
 </header>

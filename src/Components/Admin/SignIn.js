@@ -19,7 +19,7 @@ const SignIn = () => {
             })
 
             const data = await res.json();
-            if(res.status === 422 || !data){
+            if(res.status === 400 || !data){
                 console.log("err");
             }else{
                 window.location = "/connect-admin/home";

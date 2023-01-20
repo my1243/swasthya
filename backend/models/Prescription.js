@@ -49,6 +49,10 @@ const prescriptionSchema = new mongoose.Schema({
                             type:Boolean,
                             require:true
                         },
+                        beaf:{
+                            type:Boolean,
+                            require:true
+                        },
                         quantity:{
                             type:Number,
                             require:true

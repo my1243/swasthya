@@ -119,20 +119,23 @@ const BookAppointment = () => {
                 </div>
 
                 <h1 className="text-xl text-red-500 font-bold mt-4 mb-2">Select Date</h1>
-                <div className="flex w-full gap-4 mb-4 items-center justify-center">
+                <ul className="filter-switch inline-flex relative w-full gap-4 mb-4 items-center justify-between text-black">
                     {
                         date.map((val,idx) => {
                             return(
                                 <>
-                                    <input type={"radio"} id="ddate" placeholder="jfhgssdnfjhg fjhgjhgj jfgjg" className={`w-full flex flex-col items-center rounded-md font-bold p-2 border-2 text-indigo-800 bg-gray-200 hover:bg-blue-500 hover:text-white cursor-pointer transition-all duration-300`} onClick={() => {setDDate(date[idx]);}}>
-                                        {/* <h1>{val.day}</h1>
-                                        <h1>{val.date}</h1> */}
-                                    </input>
+                                <li className="filter-switch-item flex relative w-full flex-col items-center rounded-md font-bold p-2 border-2 bg-gray-200 cursor-pointer transition-all duration-300">
+                                    <input type={"radio"} name="ddate" id="ddate" className="sr-only" checked onClick={() => {setDDate(date[idx]);}}/>
+                                        <label className="text-gray-600 hover:text-gray-800">
+                                            <h1>{val.day}</h1>
+                                            <h1>{val.date}</h1>
+                                        </label>
+                                </li>
                                 </>
                             )
                         })
                     }
-                </div>
+                </ul>
                 <h1 className="text-xl text-red-500 font-bold my-2">Select Time</h1>
                 <div className="grid grid-cols-6 text-center gap-x-8 gap-y-4">
                     {

@@ -1,10 +1,61 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 const Slidebar = () => {
   let commonClass =
     "inline-flex items-center w-full px-4 py-2 mt-1 text-base transition duration-500 ease-in-out transform border-none rounded-lg text-neutral-200 focus:bg-neutral-900 focus:border-neutral-900 focus:shadow-outline";
 
+    const [user,setUser] = useState({});
+    const authenticate = async () => {
+        try{
+            const res = await fetch("/logged", {
+                method:"GET",
+                headers:{
+                    "Content-Type":"Application/json",
+                    "Accept": "Application/json"
+                },
+                // body:JSON.stringify({type:"Admin"}),
+                credentials:"include",
+            });
+    
+            const data = await res.json();
+            if(data){
+                setUser(data);
+            }
+            if(res.status === 400){
+                // return res.status;
+                throw new Error("admin credentials not matched");
+            }
+        }catch(err){
+            console.log(err);
+            window.location = "/connect-admin";
+        }
+    }
+
+    const logoutfn = async () => {
+        try{
+            const res = await fetch("/logout", {
+                method:"GET",
+                headers:{
+                    "Content-Type":"application/json",
+                    Accept:"application/json"
+                },
+                credentials:"include"
+            })
+            if(res.status === 200){
+                // alert.success("Logout");
+                window.location="/connect-admin";
+            }else{
+                alert.error("logout failed");
+            }
+        }catch(err){
+            console.log(err);
+        }
+      }
+
+    // useEffect(() => {
+    //     authenticate();
+    // },[]);
   return (
     <>
       <div className="w-64 h-screen shadow hidden lg:block bg-white">
@@ -69,13 +120,20 @@ const Slidebar = () => {
                   </ul>
                 </nav>
               </div>
-              <div className="hidden md:flex md:flex-shrink-0 md:p-4 md:bg-neutral-900">
-                <Link to={"/"} className="flex-shrink-0 block w-full group">
-                  <div className="flex items-center">
+              <div className="hidden md:flex md:flex-shrink-0 md:p-4 md:bg-neutral-900 flex-col gap-y-2">
+              <button
+                        className="inline-flex items-center w-full hover:bg-neutral-800 px-4 py-2 mt-1 text-base transition duration-500 ease-in-out transform rounded-lg text-neutral-200 focus:shadow-outline"
+                        onClick={logoutfn}
+                      >
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <span className="ml-4">Logout</span>
+                      </button>
+                <Link to={"/"} className="flex-shrink-0 block w-full border-t-2 border-gray-500 pt-4">
+                  <div className="flex items-center ml-2">
                     <div>
                       <img
                         className="inline-block rounded-full h-9 w-9"
-                        src="/images/logo.png"
+                        src="/images/avatar.jpg"
                         alt="logo"
                       />
                     </div>

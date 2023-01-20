@@ -205,7 +205,7 @@ const UserSearch = () => {
                       })}
                       <div className="mt-4">
                         <label>Days to intake : </label>
-                        <input type={"text"} value={MedicinesPres.no_of_days} name="no_of_days" id="no_of_days" onChange={handleInputs} />
+                        <input type={"text"} className="p-1.5 mt-1 rounded-md border-2 border-gray-200" value={MedicinesPres.no_of_days} name="no_of_days" id="no_of_days" onChange={handleInputs} />
                       </div>
                     </div>
                   ) : (
@@ -216,7 +216,7 @@ const UserSearch = () => {
                   </button>
                 </div>
               </div>
-              <div className="w-2/5 border rounded-lg px-4 pb-2">
+              <div className="w-2/5 h-96 border rounded-lg px-4 pb-2">
                 <h1 className="text-2xl text-emerald-700 font-bold my-2">
                   Medicines
                 </h1>
@@ -334,6 +334,7 @@ const UserSearch = () => {
                       Quantity
                     </h6>
                     <input
+                      className="p-1.5 mt-1 rounded-md border-2 border-gray-200"
                       type={"number"}
                       name="quantity"
                       id="quantity"
