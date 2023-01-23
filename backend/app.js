@@ -10,7 +10,7 @@ const PORT = process.env.PORT;
 
 app.use(express.json());
 app.use(cookieParser());
-// app.use(require("./routers/auth"));
+app.use(require("./routers/auth"));
 
 
 app.get('/', (req, res) => {
