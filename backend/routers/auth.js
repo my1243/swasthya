@@ -272,11 +272,11 @@ router.post("/prescribe",async (req,res) => {
 router.post("/bookapp", async (req,res) => {
     console.log("hi");
     try{
-    const {PID,fname,lname,date,time} = req.body;
-    const uExists = await Appointment.findOne({date});
-    const obj = {PID:PID,fname:fname, lname:lname,time:time};
+    const {PID,fname,lname,date,time,day,mobile} = req.body;
+    const uExists = await Appointment.findOne({date, $and : [{"timings.time" : { $eq: time}}, {"timings.aval" :{$gt:0}}]});
+    const obj = {PID:PID,fname:fname, lname:lname,mobile:mobile};
     if(uExists){
-        if(uExists.aval === 0){
+        if(uExists === 0){
             res.status(400).json({msg:"Appointment quota full!"});
         }else{
             const data = await Appointment.findOneAndUpdate({date}, {aval:uExists.aval-1, $push :{patient: obj}});
@@ -285,7 +285,9 @@ router.post("/bookapp", async (req,res) => {
             }
         }
     }else{
-        const newAppointment = new Appointment({date, aval:60, patient:obj});
+
+        const y = {time:time,aval:10,patient:obj}
+        const newAppointment = new Appointment({date,day,timings:y});
         const data = await newAppointment.save();
         if(data){
             res.status(201).json({msg:"created successfully"});
