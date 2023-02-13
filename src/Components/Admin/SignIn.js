@@ -22,7 +22,7 @@ const SignIn = (props) => {
             if(res.status === 400 || !data){
                 console.log("err");
             }else{
-                props.isadminlog(true);
+                // props.isadminlog(true);
                 window.location = "/connect-admin/home";
             }
         }catch(err){

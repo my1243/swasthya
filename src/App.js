@@ -16,11 +16,16 @@ import Home from "./Components/Home";
 import Navbar from "./Components/Navbar";
 import NewPatient from "./Components/Admin/NewPatient";
 import UserSearch from "./Components/UserSearch";
-import { useState } from "react";
+import { createContext, useReducer, useState } from "react";
+import { initialState, reducer } from "./Reducers/UseReduce";
+import Login from "./Components/Login";
 
+export const UserContext = createContext();
 const App = () => {
-    const [doct,setDoct] = useState({});
+    // const [doct,setDoct] = useState({});
+    const [flag,setFlag] = useState(false);
     // const [isLogin, setisLogin] = useState(false);
+    const [state,dispatch] = useReducer(reducer,initialState);
     return(
         <>
             <Router>
@@ -41,15 +46,23 @@ const App = () => {
                         <Route path="/connect-admin/new-patient" element={<NewPatient/>} />
                     </Route>
                     <Route path="/connect-admin" element={<SignIn/>} />
+                    <>
                     <Route element={
                         <>
-                            <Navbar doct={doct} />
+                            <Navbar/>
                             <Outlet/>
                         </>
                     }>
-                        <Route path="/" element={<Home setDoct={setDoct}/>} />
+                    {flag?
                         <Route path="/user-search" element={<UserSearch/>} />
+                        :
+                        <>
+                        <Route path="/" element={<Home setFlag={setFlag}/>} />
+                        <Route path="/login" element={<Login/>} />
+                        </>
+                    }
                     </Route>
+            </>
                     <Route path="/sidebar" element={<Slidebar/>}/>
                 </Routes>
             </Router>
