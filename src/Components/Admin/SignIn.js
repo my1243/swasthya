@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const SignIn = () => {
+const SignIn = (props) => {
     const [user,setUser] = useState({
         email:"",
         password:""
@@ -22,6 +22,7 @@ const SignIn = () => {
             if(res.status === 400 || !data){
                 console.log("err");
             }else{
+                // props.isadminlog(true);
                 window.location = "/connect-admin/home";
             }
         }catch(err){

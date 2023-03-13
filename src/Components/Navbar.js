@@ -1,40 +1,42 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { UserContext } from "../App";
 // import authenticate from "../functions/authenticate";
 
 const Navbar = (props) => {
     const [user,setUser] = useState({});
     const [flag,setFlag] = useState(false);
-
+    // const {state,dispatch} = useContext(UserContext);
 
     const authenticate = async () => {
         try{
-            const res = await fetch("/logged", {
+            const res = await fetch("/dlogged", {
                 method:"GET",
                 headers:{
                     "Content-Type":"Application/json",
                     "Accept": "Application/json"
                 },
-                body:JSON.stringify({type:"Doctor"}),
                 credentials:"include",
             });
     
             const data = await res.json();
             if(data){
-                // setUser(data);
+                // setFlag(true);
                 window.location="/user-search";
             }
-            if(res.status === 400){
-                throw new Error("credentials not matched");
-            }
         }catch(err){
+            // setFlag(false);
             console.log(err);
-            window.location = "/";
+            // window.location = "/";
         }
+    }
+
+    const logoutUser = () => {
+        // dispatch({type:"USER", payload:false});
     }
     // useEffect(() => {
     //     authenticate();
-    // },[props.doct]);
+    // },[]);
 
     return(
         <>
@@ -49,7 +51,7 @@ const Navbar = (props) => {
     </Link>
     </div>
     <div>
-    { Object.keys(props.doct).length > 0 ? 
+    {/* { Object.keys(props.doct).length > 0 ? 
         <div className="flex flex-row items-center justify-center">
             <div className="h-12 w-12 rounded-full overflow-hidden m-2">
               <img src="/images/avatar.jpg" />
@@ -70,12 +72,15 @@ const Navbar = (props) => {
                 <Link to="/">Logout</Link>
               </div>
             </li>
-          </div> :
-          <button class="inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base mt-4 md:mt-0">Sign In
+          </div> : */}
+          {flag ? 
+          <Link to={"/Login"} class="inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base mt-4 md:mt-0">Sign In
+    <i class="ml-2 fa-solid fa-arrow-right"></i>
+    </Link>:
+          <button onClick={() => logoutUser()} class="inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base mt-4 md:mt-0">Log Out
     <i class="ml-2 fa-solid fa-arrow-right"></i>
     </button>
-    }
-    
+          }
     </div>
   </div>
 </header>

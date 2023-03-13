@@ -71,6 +71,29 @@ const BookAppointment = () => {
             setUser(data);
         }
     }
+
+    const postData = async () => {
+        const { day, date } = ddate;
+        const { PID, fname, lname, mobile } = user;
+        const time = ttime;
+        try {
+            const res = await fetch("/bookapp", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "Application/json"
+                },
+                body: JSON.stringify({ PID, fname, lname, mobile, day, date, time })
+            })
+            const data = await res.json();
+            if (!data || res.status === 400 || res.status === 404) {
+                console.log("Error: Appointment not booked");
+            } else {
+                console.log("Appointment booked successfully");
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    }
     return (
         <>
             <div className="m-4 w-full">
@@ -125,9 +148,8 @@ const BookAppointment = () => {
                                 date.map((val, idx) => {
                                     return (
                                         <>
-                                            <li className="filter-switch-item flex relative w-full flex-col items-center rounded-md font-bold p-2 border-2 bg-gray-200 cursor-pointer transition-all duration-300">
-                                                <input type={"radio"} name="ddate" id="ddate" className="sr-only" checked onClick={() => { setDDate(date[idx]); }} />
-                                                <label className="text-gray-600 hover:text-gray-800">
+                                            <li onClick={() => setDDate(val)} className={`flex w-full flex-col items-center rounded-md font-bold p-2 border-2 cursor-pointer transition-all duration-300 ${ddate.date === val.date ? "bg-blue-700" : "bg-gray-50"}`}>
+                                                <label className={`hover:text-gray-800 ${ddate.date === val.date ? "text-white" : "text-gray-600"}`}>
                                                     <h1>{val.day}</h1>
                                                     <h1>{val.date}</h1>
                                                 </label>
@@ -143,14 +165,14 @@ const BookAppointment = () => {
                                 time.map((val, idx) => {
                                     return (
                                         <>
-                                            <h1 className="p-2 bg-gray-200 border font-medium text-indigo-800 hover:text-white rounded-lg hover:bg-blue-500 cursor-pointer transition-all duration-300" onClick={() => { setTTime(time[idx]) }}>{val}</h1>
+                                            <h1 className={`p-2 border font-medium hover:text-gray-800 rounded-lg cursor-pointer transition-all duration-300 ${ttime === val ? "text-white bg-blue-700" : "text-gray-600 bg-gray-50"}`} onClick={() => { setTTime(val) }}>{val}</h1>
                                         </>
                                     )
                                 })
                             }
                         </div>
                         {console.log(ttime)}
-                        <button className="p-2 bg-blue-700 rounded-md text-white font-medium px-4 my-5 hover:text-black hover:bg-blue-300 transition-all duration-200">Book Appointment</button>
+                        <button onClick={postData} className="p-2 bg-blue-700 rounded-md text-white font-medium px-4 my-5 hover:text-black hover:bg-blue-300 transition-all duration-200">Book Appointment</button>
                     </> : <></>
                 }
 

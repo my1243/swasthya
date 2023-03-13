@@ -8,7 +8,7 @@ const Slidebar = () => {
     const [user,setUser] = useState({});
     const authenticate = async () => {
         try{
-            const res = await fetch("/logged", {
+            const res = await fetch("/alogged", {
                 method:"GET",
                 headers:{
                     "Content-Type":"Application/json",
@@ -53,11 +53,12 @@ const Slidebar = () => {
         }
       }
 
-    // useEffect(() => {
-    //     authenticate();
-    // },[]);
+    useEffect(() => {
+        authenticate();
+    },[]);
   return (
     <>
+    {user? 
       <div className="w-64 h-screen shadow hidden lg:block bg-white">
         <div className="flex flex-col md:flex md:flex-shrink-0">
           <div className="flex flex-col md:w-64 md:h-screen">
@@ -148,7 +149,7 @@ const Slidebar = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div>: <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div> }
     </>
   );
 }

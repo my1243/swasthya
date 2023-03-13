@@ -28,7 +28,17 @@ router.get("/", (req, res) => {
 //     // console.log(data);
 // })
 
-router.get("/logged", authenticate, (req, res) => {
+router.get("/dlogged", authenticate.authenticate1, (req, res) => {
+    console.log("hello from logged");
+    res.send(req.rootUser);
+})
+
+router.get("/alogged", authenticate.authenticate2, (req, res) => {
+    console.log("hello from logged");
+    res.send(req.rootUser);
+})
+
+router.get("/plogged", authenticate.authenticate3, (req, res) => {
     console.log("hello from logged");
     res.send(req.rootUser);
 })
@@ -137,6 +147,7 @@ router.post("/searchUser", async (req, res) => {
     try {
         const data = await Patient.findOne({ PID: idx });
         if (data) {
+            // console.log(data);
             res.status(201).json(data);
         } else {
             res.status(422).json({ "error": "Invalid credentials" });
@@ -161,7 +172,7 @@ router.post('/login', async (req, res) => {
             const token = await PatientExists.generateAuthToken();
             // console.log(token);
 
-            res.cookie("jwtoken", token, {
+            res.cookie("pwtoken", token, {
                 expires: new Date(Date.now() + 1296000000),
                 httpOnly: true
             })
@@ -195,7 +206,7 @@ router.post('/doctlogin', async (req, res) => {
             const token = await doctorExists.generateAuthToken();
             console.log(token);
 
-            res.cookie("jwtoken", token, {
+            res.cookie("dwtoken", token, {
                 expires: new Date(Date.now() + 1296000000),
                 httpOnly: true
             })
@@ -227,7 +238,7 @@ router.post("/adminlog", async (req, res) => {
             const token = await adExists.generateAuthToken();
             console.log(token);
 
-            res.cookie("jwtoken", token, {
+            res.cookie("awtoken", token, {
                 expires: new Date(Date.now() + 1296000000),
                 httpOnly: true
             })
@@ -272,20 +283,38 @@ router.post("/prescribe", async (req, res) => {
 router.post("/bookapp", async (req, res) => {
     console.log("hi");
     try {
-        const { PID, fname, lname, date, time } = req.body;
+        const { PID, fname, lname, date, time, day, mobile } = req.body;
         const uExists = await Appointment.findOne({ date });
-        const obj = { PID: PID, fname: fname, lname: lname, time: time };
+        const obj = { PID: PID, fname: fname, lname: lname, mobile: mobile };
+        let data;
+        let flag = false;
         if (uExists) {
-            if (uExists.aval === 0) {
-                res.status(400).json({ msg: "Appointment quota full!" });
-            } else {
-                const data = await Appointment.findOneAndUpdate({ date }, { aval: uExists.aval - 1, $push: { patient: obj } });
-                if (data) {
-                    res.status(201).json({ msg: "Updated successfully" });
+            uExists.timings.map(async (val, idx) => {
+                console.log("ejhg")
+                if (val.time === time) {
+                    flag = true;
+                    if (val.aval > 0) {
+                        console.log("djfhgd");
+                        uExists.timings[idx].aval--;
+                        uExists.timings[idx].patient.push(obj);
+                        data = await Appointment.findOneAndUpdate({ date }, uExists, { new: true });
+                        console.log(data.timings[0].patient);
+                    } else {
+                        res.status(400).json({ msg: "Appointment quota full!" });
+                    }
                 }
+            })
+            if (!flag) {
+                const y = { time: time, aval: 9, patient: obj };
+                data = await Appointment.findOneAndUpdate({ date }, { $push: { "timings": y } }, { new: true });
+                console.log(data.timings);
+            }
+            if (data) {
+                res.status(201).json({ msg: "created successfully" });
             }
         } else {
-            const newAppointment = new Appointment({ date, aval: 60, patient: obj });
+            const y = { time: time, aval: 9, patient: obj }
+            const newAppointment = new Appointment({ date, day, timings: y });
             const data = await newAppointment.save();
             if (data) {
                 res.status(201).json({ msg: "created successfully" });
@@ -310,6 +339,27 @@ router.post("/getLatestPrescription", async (req, res) => {
         } else {
             res.status(422).json({ msg: "invalid patient id" });
         }
+    } catch (err) {
+        console.log(err);
+    }
+})
+
+router.post("/getAppointments", async (req, res) => {
+    console.log("jkk");
+    try {
+        const { date } = req.body;
+        const dateExists = await Appointment.findOne({ date });
+        if (!dateExists) {
+            res.status(422).json({ msg: "No Appointment" });
+        }
+        const sendData = [];
+        dateExists.timings.map((val, idx) => {
+            val.patient.map((valx, idx) => {
+                sendData.push(valx);
+            })
+        })
+        console.log(sendData);
+        res.status(201).json(sendData);
     } catch (err) {
         console.log(err);
     }
