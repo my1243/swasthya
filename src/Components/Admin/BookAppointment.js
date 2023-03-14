@@ -129,18 +129,6 @@ const BookAppointment = () => {
                     </div>
                 </div>
                 </div>
-                <div className="flex bg-gray-200 items-center justify-center h-16 my-2 p-2 border rounded-lg">
-                    <label className="mr-4 font-medium text-lg">Select Department</label>
-                    <select className="p-2 rounded-lg" id="dept" name="dept">
-                        <option className="p-2" value={"none"}>Select</option> 
-                        <option className="p-2" value={"Cardiology"}>Cardiology</option>
-                        <option className="p-2" value={"Dialysis"}>Dialysis</option> 
-                        <option className="p-2" value={"Eye"}>Eye</option>
-                        <option className="p-2" value={"Skin"}>Skin</option>
-                        <option className="p-2" value={"OPD"}>OPD</option> 
-                    </select>
-                </div>
-
                 <h1 className="text-xl text-red-500 font-bold mt-4 mb-2">Select Date</h1>
                 <ul className="filter-switch inline-flex relative w-full gap-4 mb-4 items-center justify-between text-black">
                     {
@@ -170,8 +158,7 @@ const BookAppointment = () => {
                         })
                     }
                 </div>
-                    {console.log(ttime)}
-                <button onClick={postData} className="p-2 bg-blue-700 rounded-md text-white font-medium px-4 my-5 hover:text-black hover:bg-blue-300 transition-all duration-200">Book Appointment</button>
+                <button onClick={postData} className="p-2 bg-blue-700 rounded-md text-white font-medium px-4 my-4 hover:text-black hover:bg-blue-300 transition-all duration-200">Book Appointment</button>
                 </> : <></>
             }
 

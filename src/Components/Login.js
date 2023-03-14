@@ -43,7 +43,6 @@ const Login = (props) => {
                     console.log("error");
                 }else{
                     console.log(data);
-                    props.setFlag(true);
                     // dispatch({type:"USER", payload:true});
                     window.location = "/user-search";
                 }

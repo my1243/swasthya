@@ -1,5 +1,5 @@
+import moment from "moment/moment";
 import { useState } from "react";
-import DatePicker from "react-date-picker";
 
 const CheckAppointment = () => {
     const [dt,setDt] = useState(new Date());
@@ -8,12 +8,14 @@ const CheckAppointment = () => {
     const postData = async (e) => {
         e.preventDefault();
         try{
+            const dx = moment(date).format("M/D/YYYY");
+            console.log(dx);
             const res = await fetch("/getAppointments",{
                 headers:{
                     "Content-Type":"Application/json"
                 },
                 method:"POST",
-                body:JSON.stringify({date})
+                body:JSON.stringify({dx})
             });
             const data = await res.json();
             if(!data || res.status === 422){
@@ -33,7 +35,7 @@ const CheckAppointment = () => {
       <div className="h-2 bg-neutral-800 rounded-full mb-2 w-[36rem]"></div>
         <div className="h-16 mb-4 border rounded-lg flex gap-x-4 justify-center items-center">
           <h3>Date</h3>
-          <DatePicker value={date} onChange={setDate()}/>
+          <input type={"date"} name="date" value={date} className="border-2 p-1 rounded-md" onChange={(e) => setDate(e.target.value)}/>
           <button onClick={postData}><i class="fa-solid fa-magnifying-glass"></i></button>
         </div>
         { Object.keys(patients).length> 0 &&

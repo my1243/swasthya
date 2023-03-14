@@ -30,17 +30,17 @@ router.get("/", (req,res) => {
 
 router.get("/dlogged", authenticate.authenticate1, (req,res) => {
     console.log("hello from logged");
-    res.send(req.rootUser);
+    res.status(200).json(req.rootUser);
 })
 
 router.get("/alogged", authenticate.authenticate2, (req,res) => {
     console.log("hello from logged");
-    res.send(req.rootUser);
+    res.status(200).json(req.rootUser);
 })
 
 router.get("/plogged", authenticate.authenticate3, (req,res) => {
     console.log("hello from logged");
-    res.send(req.rootUser);
+    res.status(200).json(req.rootUser);
 })
 
 router.post("/patSignup", async (req,res) => {
@@ -169,19 +169,20 @@ router.post('/login', async (req,res) => {
         const PatientExists = await Patient.findOne({pid:pid});
         if(PatientExists){
             const isMatch = await bcrypt.compare(pass,PatientExists.password);
-            const token = await PatientExists.generateAuthToken();
+            if(!isMatch){
+                res.status(400).json({error: "Invalid"});
+            }else{
+                const token = await PatientExists.generateAuthToken();
             console.log(token);
 
             res.cookie("pwtoken", token, {
                 expires: new Date(Date.now() + 1296000000),
                 httpOnly:true
             })
-
-            if(!isMatch){
-                res.status(400).json({error: "Invalid"});
-            }else{
                 res.status(201).json(PatientExists);
             }
+            
+
         }else{
             res.status(400).json({error: "Invalid details"});
         }
@@ -203,7 +204,11 @@ router.post('/doctlogin', async (req,res) => {
         const doctorExists = await Doctor.findOne({email:email});
         if(doctorExists){
             const isMatch = await bcrypt.compare(password,doctorExists.password);
-            const token = await doctorExists.generateAuthToken();
+            
+            if(!isMatch){
+                res.status(400).json({error: "Invalid"});
+            }else{
+                const token = await doctorExists.generateAuthToken();
             console.log(token);
 
             res.cookie("dwtoken", token, {
@@ -211,9 +216,6 @@ router.post('/doctlogin', async (req,res) => {
                 httpOnly:true
             })
 
-            if(!isMatch){
-                res.status(400).json({error: "Invalid"});
-            }else{
                 res.status(201).json(doctorExists);
             }
         }else{
@@ -239,7 +241,7 @@ router.post("/adminlog", async (req,res) => {
             console.log(token);
 
             res.cookie("awtoken", token, {
-                expires: new Date(Date.now() + 1296000000),
+                expires: new Date(Date.now() + 3600000),
                 httpOnly:true
             })
 
@@ -345,8 +347,8 @@ router.post("/bookapp", async (req,res) => {
  router.post("/getAppointments", async (req,res) => {
     console.log("jkk");
     try{
-        const {date} = req.body;
-        const dateExists = await Appointment.findOne({date});
+        const {dx} = req.body;
+        const dateExists = await Appointment.findOne({date:dx});
         if(!dateExists){
             res.status(422).json({msg:"No Appointment"});
         }
@@ -364,7 +366,7 @@ router.post("/bookapp", async (req,res) => {
  })
 
  router.get("/logout", (req, res) => {
-    res.clearCookie("jwtoken", { path: "/" });
+    res.clearCookie("dwtoken", { path: "/" });
     res.status(200).send("user logout");
   });
 

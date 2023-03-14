@@ -22,7 +22,7 @@ import Login from "./Components/Login";
 
 export const UserContext = createContext();
 const App = () => {
-    // const [doct,setDoct] = useState({});
+    const [doct,setDoct] = useState({});
     const [flag,setFlag] = useState(false);
     // const [isLogin, setisLogin] = useState(false);
     const [state,dispatch] = useReducer(reducer,initialState);
@@ -49,18 +49,13 @@ const App = () => {
                     <>
                     <Route element={
                         <>
-                            <Navbar/>
+                            <Navbar doct = {doct} setDoct = {setDoct}/>
                             <Outlet/>
                         </>
                     }>
-                    {flag?
-                        <Route path="/user-search" element={<UserSearch/>} />
-                        :
-                        <>
-                        <Route path="/" element={<Home setFlag={setFlag}/>} />
+                        <Route path="/user-search" element={<UserSearch setDoct = {setDoct}/>} />
+                        <Route path="/" element={<Home/>} />
                         <Route path="/login" element={<Login/>} />
-                        </>
-                    }
                     </Route>
             </>
                     <Route path="/sidebar" element={<Slidebar/>}/>
