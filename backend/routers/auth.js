@@ -288,7 +288,8 @@ router.post("/bookapp", async (req, res) => {
         const { PID, fname, lname, date, time, day, mobile } = req.body;
         const uExists = await Appointment.findOne({ date });
         const obj = { PID: PID, fname: fname, lname: lname, mobile: mobile };
-        let data;
+        const uobj = {drname:"Dr. Ronak Shah", time, date, day};
+        let data,udata;
         let flag = false;
         if (uExists) {
             uExists.timings.map(async (val, idx) => {
@@ -309,21 +310,34 @@ router.post("/bookapp", async (req, res) => {
             if (!flag) {
                 const y = { time: time, aval: 9, patient: obj };
                 data = await Appointment.findOneAndUpdate({ date }, { $push: { "timings": y } }, { new: true });
+                udata = await Patient.findOneAndUpdate({PID}, {$push : {appointmets: uobj }}, {new:true});
                 console.log(data.timings);
             }
-            if (data) {
+            if (data && udata) {
                 res.status(201).json({ msg: "created successfully" });
             }
         } else {
             const y = { time: time, aval: 9, patient: obj }
             const newAppointment = new Appointment({ date, day, timings: y });
             const data = await newAppointment.save();
-            if (data) {
+            udata = await Patient.findOneAndUpdate({PID}, {$push : {appointments: uobj }}, {new:true});
+            if (data && udata) {
                 res.status(201).json({ msg: "created successfully" });
             }
         }
     } catch (err) {
         res.status(404).json({ msg: "Error" });
+        console.log(err);
+    }
+})
+
+router.post('/latestAppoint', async (req,res) => {
+    console.log("inside latest appoint");
+    try{
+        const PID = req.body.PID;
+        const data = await Patient.findOne({PID});
+        res.status(201).json(data.appointments[data.appointments.length-1])
+    }catch(err){
         console.log(err);
     }
 })

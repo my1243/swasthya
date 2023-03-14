@@ -43,6 +43,26 @@ const patientSchema = new mongoose.Schema({
         type:String,
         require:true
     },
+    appointments: [
+        {
+            drname:{
+                type:String,
+                required:true
+            },
+            date:{
+                type:String,
+                required:true
+            },
+            time:{
+                type:String,
+                required:true
+            },
+            day:{
+                type:String,
+                required:true
+            },
+        }
+    ],
     tokens : [
         {
             token:{
