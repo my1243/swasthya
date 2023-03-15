@@ -143,7 +143,7 @@ const Available = () => {
           </div>
         </div>
         <div className="basis-1/2 flex-1 order-1 lg:order-2">
-          <img className="w-4/5 h-4/5" src="./images/land.jpg" />
+          <img className="w-4/5 h-4/5" src="./images/land.png" />
         </div>
       </div>
     </>
