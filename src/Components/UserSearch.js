@@ -1,8 +1,32 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-const UserSearch = () => {
+const UserSearch = (props) => {
   const [idx, setidx] = useState("");
+  const authenticate = async () => {
+    try{
+        const res = await fetch("/dlogged", {
+            method:"GET",
+            headers:{
+                "Content-Type":"Application/json",
+                "Accept": "Application/json"
+            },
+            credentials:"include",
+        });
+
+        const data = await res.json();
+        if(!data || res.status !== 200){
+            throw new Error("can't authnticate");
+        }else{
+            props.setDoct(data);
+        }
+    }catch(err){
+        // setFlag(false);
+        console.log(err);
+        window.location = "/login";
+    }
+}
+
   const [medicineSearch, setMedicineSearch] = useState("");
   const [singleMed, setSingleMed] = useState({
     name: "",
@@ -47,6 +71,9 @@ const UserSearch = () => {
     }
   };
 
+  useEffect(() => {
+    authenticate();
+  },[]);
   const presData = async (e) => {
     e.preventDefault();
     const {PID,fname,lname} = user; 
@@ -77,26 +104,26 @@ const UserSearch = () => {
       <div className="m-4">
         <div className="h-16 flex mb-2 flex-row items-center gap-x-4 justify-center bg-gray-100 rounded-lg">
           <h3 className="text-xl">Search with patient's ID</h3>
-          <form onSubmit={postData}>
+          <div className="rounded-md overflow-hidden">
             <input
               type={"text"}
               id="ID"
               name="ID"
               value={idx}
               onChange={(e) => setidx(e.target.value)}
-              className="px-2 py-1 rounded-md focus:outline-none"
+              className="px-2 py-1 focus:outline-none"
             />
-          </form>
           <i
             onClick={postData}
-            class="fa-solid fa-magnifying-glass bg-emerald-400 p-2 rounded-lg"
+            class="fa-solid fa-magnifying-glass bg-sky-200 hover:bg-sky-400 p-2"
           ></i>
+          </div>
         </div>
 
         {Object.keys(user).length > 0 ? (
           <>
             <div className="border rounded-lg p-4">
-              <h1 className="text-2xl text-emerald-700 font-bold mb-2">
+              <h1 className="text-2xl text-sky-400 font-bold mb-2">
                 Patient details
               </h1>
               <div className="flex items-center justify-between ">
@@ -128,13 +155,15 @@ const UserSearch = () => {
             </div>
           </>
         ) : (
-          <></>
+          <>
+            <div className="flex justify-center items-center h-96 text-3xl font-medium text-slate-800">Enter patient ID to proceed...</div>
+          </>
         )}
         {Object.keys(user).length > 0 ? (
           <>
             <div className="flex gap-4 my-4">
               <div className="w-3/5 border rounded-lg px-4">
-                <h1 className="text-emerald-700 font-bold text-3xl mt-4 mb-2">
+                <h1 className="text-sky-400 font-bold text-3xl mt-4 mb-2">
                   Prescription
                 </h1>
                 <div className="text-red-500 font-medium">
@@ -211,13 +240,13 @@ const UserSearch = () => {
                   ) : (
                     <></>
                   )}
-                  <button onClick={presData} className="w-20 p-2 bg-blue-600 my-2 text-white rounded-lg">
+                  <button onClick={presData} className="w-20 p-2 bg-sky-400 hover:scale-110 duration-300  my-2 text-white rounded-lg">
                     Send
                   </button>
                 </div>
               </div>
               <div className="w-2/5 h-96 border rounded-lg px-4 pb-2">
-                <h1 className="text-2xl text-emerald-700 font-bold my-2">
+                <h1 className="text-2xl text-sky-400 font-bold my-2">
                   Medicines
                 </h1>
                 <input
@@ -236,7 +265,7 @@ const UserSearch = () => {
                     {medicineSearch}
                   </h1>
                   <div className="mb-2">
-                      <h6 className="text-lg font-bold text-emerald-700">
+                      <h6 className="text-lg font-bold text-sky-400">
                         Timings
                       </h6>
                       <div className="flex gap-x-4">
@@ -307,7 +336,7 @@ const UserSearch = () => {
                   </div>
                   </div>
                   <div>
-                    <h6 className="text-lg text-emerald-700 font-bold">
+                    <h6 className="text-lg text-sky-400 font-bold">
                       Before / After
                     </h6>
                     <input
@@ -330,7 +359,7 @@ const UserSearch = () => {
                     <label>After</label>
                   </div>
                   <div>
-                    <h6 className="text-lg text-emerald-700 font-bold">
+                    <h6 className="text-lg text-sky-400 font-bold">
                       Quantity
                     </h6>
                     <input
@@ -355,7 +384,7 @@ const UserSearch = () => {
                           MedicinesPres.Medicines.concat(singleMed),
                       });
                     }}
-                    className="w-20 p-2 bg-blue-600 my-2 text-white rounded-lg"
+                    className="w-20 p-2 bg-sky-400 hover:scale-110 transistion-all duration-300 my-2 text-white rounded-lg"
                   >
                     Add
                   </button>

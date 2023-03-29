@@ -106,75 +106,75 @@ const BookAppointment = () => {
                     <input type={"text"} className="p-2 mx-4 rounded-lg placeholder-slate-900 border border-gray-300 outline-none focus:border-neutral-300 transistion-all duration-33 ease-linear" id="pid" name="pid" value={pid} onChange={(e) => setPID(e.target.value)} />
                     <button onClick={searchPat}><i class="fa-solid fa-magnifying-glass"></i></button>
                 </div>
-                {Object.keys(user).length > 0 ?
-                    <>
-                        {console.log(date)}
-                        <div className="border rounded-xl p-4">
-                            <h1 className="text-2xl text-emerald-700 font-bold mb-2">Patient details</h1>
-                            <div className="flex items-center justify-between ">
-                                <div className="flex gap-x-2">
-                                    <h1 className="text-lg font-semibold">Name:</h1>
-                                    <h1 className="text-lg text-red-500 font-medium">{user.fname} {user.lname}</h1>
-                                </div>
-                                <div className="flex gap-x-2">
-                                    <h1 className="text-lg font-semibold">Age:</h1>
-                                    <h1 className="text-lg text-red-500 font-medium">{user.age}</h1>
-                                </div>
-                                <div className="flex gap-x-2">
-                                    <h1 className="text-lg font-semibold">Blood Group:</h1>
-                                    <h1 className="text-lg text-red-500 font-medium">{user.bgroup}</h1>
-                                </div>
-                                <div className="flex gap-x-2">
-                                    <h1 className="text-lg font-semibold">Gender:</h1>
-                                    <h1 className="text-lg text-red-500 font-medium">{user.gender}</h1>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="flex bg-gray-200 items-center justify-center h-16 my-2 p-2 border rounded-lg">
-                            <label className="mr-4 font-medium text-lg">Select Department</label>
-                            <select className="p-2 rounded-lg" id="dept" name="dept">
-                                <option className="p-2" value={"none"}>Select</option>
-                                <option className="p-2" value={"Cardiology"}>Cardiology</option>
-                                <option className="p-2" value={"Dialysis"}>Dialysis</option>
-                                <option className="p-2" value={"Eye"}>Eye</option>
-                                <option className="p-2" value={"Skin"}>Skin</option>
-                                <option className="p-2" value={"OPD"}>OPD</option>
-                            </select>
-                        </div>
-
-                        <h1 className="text-xl text-red-500 font-bold mt-4 mb-2">Select Date</h1>
-                        <ul className="filter-switch inline-flex relative w-full gap-4 mb-4 items-center justify-between text-black">
-                            {
-                                date.map((val, idx) => {
-                                    return (
-                                        <>
-                                            <li onClick={() => setDDate(val)} className={`flex w-full flex-col items-center rounded-md font-bold p-2 border-2 cursor-pointer transition-all duration-300 ${ddate.date === val.date ? "bg-blue-700" : "bg-gray-50"}`}>
-                                                <label className={`hover:text-gray-800 ${ddate.date === val.date ? "text-white" : "text-gray-600"}`}>
-                                                    <h1>{val.day}</h1>
-                                                    <h1>{val.date}</h1>
-                                                </label>
-                                            </li>
-                                        </>
-                                    )
-                                })
-                            }
-                        </ul>
-                        <h1 className="text-xl text-red-500 font-bold my-2">Select Time</h1>
-                        <div className="grid grid-cols-6 text-center gap-x-8 gap-y-4">
-                            {
-                                time.map((val, idx) => {
-                                    return (
-                                        <>
-                                            <h1 className={`p-2 border font-medium hover:text-gray-800 rounded-lg cursor-pointer transition-all duration-300 ${ttime === val ? "text-white bg-blue-700" : "text-gray-600 bg-gray-50"}`} onClick={() => { setTTime(val) }}>{val}</h1>
-                                        </>
-                                    )
-                                })
-                            }
-                        </div>
-                        {console.log(ttime)}
-                        <button onClick={postData} className="p-2 bg-blue-700 rounded-md text-white font-medium px-4 my-5 hover:text-black hover:bg-blue-300 transition-all duration-200">Book Appointment</button>
-                    </> : <></>
-                }
+                {Object.keys(user).length > 0 ? (
+          <>
+            <div className="border rounded-lg p-4">
+              <h1 className="text-2xl text-neutral-800 font-bold mb-2">
+                Patient details
+              </h1>
+              <div className="flex items-center justify-between ">
+                <div className="flex gap-x-2">
+                  <h1 className="text-lg font-semibold">Name:</h1>
+                  <h1 className="text-lg text-red-500 font-medium">
+                    {user.fname} {user.lname}
+                  </h1>
+                </div>
+                <div className="flex gap-x-2">
+                  <h1 className="text-lg font-semibold">Age:</h1>
+                  <h1 className="text-lg text-red-500 font-medium">
+                    {user.age}
+                  </h1>
+                </div>
+                <div className="flex gap-x-2">
+                  <h1 className="text-lg font-semibold">Blood Group:</h1>
+                  <h1 className="text-lg text-red-500 font-medium">
+                    {user.bgroup}
+                  </h1>
+                </div>
+                <div className="flex gap-x-2">
+                  <h1 className="text-lg font-semibold">Gender:</h1>
+                  <h1 className="text-lg text-red-500 font-medium">
+                    {user.gender}
+                  </h1>
+                </div>
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="flex justify-center items-center text-3xl font-medium text-slate-800">Enter patient ID to proceed...</div>
+          </>
+        )}
+                <h1 className="text-xl text-red-500 font-bold mt-4 mb-2">Select Date</h1>
+                <ul className="filter-switch inline-flex relative w-full gap-4 mb-4 items-center justify-between text-black">
+                    {
+                        date.map((val,idx) => {
+                            return(
+                                <>
+                                <li onClick={() => setDDate(val)} className={`flex w-full flex-col items-center rounded-md font-bold p-2 border-2 cursor-pointer transition-all duration-300 ${ddate.date === val.date ? "bg-blue-700" : "bg-gray-50"}`}>
+                                    <label className={`hover:text-gray-800 ${ddate.date === val.date ? "text-white" : "text-gray-600"}`}>
+                                            <h1>{val.day}</h1>
+                                            <h1>{val.date}</h1>
+                                        </label>
+                                </li>
+                                </>
+                            )
+                        })
+                    }
+                </ul>
+                <h1 className="text-xl text-red-500 font-bold my-2">Select Time</h1>
+                <div className="grid grid-cols-6 text-center gap-x-8 gap-y-4">
+                    {
+                        time.map((val,idx) => {
+                            return(
+                                <>
+                                    <h1 className={`p-2 border font-medium hover:text-gray-800 rounded-lg cursor-pointer transition-all duration-300 ${ttime === val ? "text-white bg-blue-700" :"text-gray-600 bg-gray-50"}`} onClick={() => {setTTime(val)}}>{val}</h1>
+                                </>
+                            )
+                        })
+                    }
+                </div>
+                <button onClick={postData} className="p-2 bg-blue-700 rounded-md text-white font-medium px-4 my-4 hover:text-black hover:bg-blue-300 transition-all duration-200">Book Appointment</button>
 
             </div>
         </>

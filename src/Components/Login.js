@@ -43,7 +43,6 @@ const Login = (props) => {
                     console.log("error");
                 }else{
                     console.log(data);
-                    props.setFlag(true);
                     // dispatch({type:"USER", payload:true});
                     window.location = "/user-search";
                 }
@@ -77,6 +76,7 @@ const Login = (props) => {
                   type={"text"}
                   id="email"
                   name="email"
+                  autoComplete="email"
                   value={user.email}
                   onChange={handleInputs}
                   placeholder="email id"
@@ -86,6 +86,7 @@ const Login = (props) => {
                   type={"password"}
                   id="password"
                   name="password"
+                  autoComplete="password"
                   value={user.password}
                   onChange={handleInputs}
                   placeholder="password"
