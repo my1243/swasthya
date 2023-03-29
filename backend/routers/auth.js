@@ -166,25 +166,27 @@ router.post('/login', async (req, res) => {
             return res.status(400).json({ error: "Plz fill all details correctly" });
         }
 
-        const PatientExists = await Patient.findOne({pid:pid});
-        if(PatientExists){
-            const isMatch = await bcrypt.compare(pass,PatientExists.password);
-            if(!isMatch){
-                res.status(400).json({error: "Invalid"});
-            }else{
+        const PatientExists = await Patient.findOne({ pid: pid }).select("-tokens");
+        if (PatientExists) {
+            const isMatch = await bcrypt.compare(pass, PatientExists.password);
+            if (!isMatch) {
+                res.status(400).json({ error: "Invalid" });
+            } else {
                 const token = await PatientExists.generateAuthToken();
-            console.log(token);
+                console.log(token);
 
-            res.cookie("pwtoken", token, {
-                expires: new Date(Date.now() + 1296000000),
-                httpOnly: true
-            })
+                res.cookie("pwtoken", token, {
+                    expires: new Date(Date.now() + 1296000000),
+                    httpOnly: true
+                })
+                console.log("patient data");
+                console.log(PatientExists);
                 res.status(201).json(PatientExists);
             }
-            
 
-        }else{
-            res.status(400).json({error: "Invalid details"});
+
+        } else {
+            res.status(400).json({ error: "Invalid details" });
         }
         console.log(PatientExists);
     } catch (err) {
@@ -201,20 +203,20 @@ router.post('/doctlogin', async (req, res) => {
             return res.status(400).json({ error: "Plz fill all details correctly" });
         }
 
-        const doctorExists = await Doctor.findOne({email:email});
-        if(doctorExists){
-            const isMatch = await bcrypt.compare(password,doctorExists.password);
-            
-            if(!isMatch){
-                res.status(400).json({error: "Invalid"});
-            }else{
-                const token = await doctorExists.generateAuthToken();
-            console.log(token);
+        const doctorExists = await Doctor.findOne({ email: email });
+        if (doctorExists) {
+            const isMatch = await bcrypt.compare(password, doctorExists.password);
 
-            res.cookie("dwtoken", token, {
-                expires: new Date(Date.now() + 1296000000),
-                httpOnly: true
-            })
+            if (!isMatch) {
+                res.status(400).json({ error: "Invalid" });
+            } else {
+                const token = await doctorExists.generateAuthToken();
+                console.log(token);
+
+                res.cookie("dwtoken", token, {
+                    expires: new Date(Date.now() + 1296000000),
+                    httpOnly: true
+                })
 
                 res.status(201).json(doctorExists);
             }
@@ -242,7 +244,7 @@ router.post("/adminlog", async (req, res) => {
 
             res.cookie("awtoken", token, {
                 expires: new Date(Date.now() + 3600000),
-                httpOnly:true
+                httpOnly: true
             })
 
             if (!isMatch) {
@@ -288,8 +290,8 @@ router.post("/bookapp", async (req, res) => {
         const { PID, fname, lname, date, time, day, mobile } = req.body;
         const uExists = await Appointment.findOne({ date });
         const obj = { PID: PID, fname: fname, lname: lname, mobile: mobile };
-        const uobj = {drname:"Dr. Ronak Shah", time, date, day};
-        let data,udata;
+        const uobj = { drname: "Dr. Ronak Shah", time, date, day };
+        let data, udata;
         let flag = false;
         if (uExists) {
             uExists.timings.map(async (val, idx) => {
@@ -310,7 +312,7 @@ router.post("/bookapp", async (req, res) => {
             if (!flag) {
                 const y = { time: time, aval: 9, patient: obj };
                 data = await Appointment.findOneAndUpdate({ date }, { $push: { "timings": y } }, { new: true });
-                udata = await Patient.findOneAndUpdate({PID}, {$push : {appointmets: uobj }}, {new:true});
+                udata = await Patient.findOneAndUpdate({ PID }, { $push: { appointmets: uobj } }, { new: true });
                 console.log(data.timings);
             }
             if (data && udata) {
@@ -320,7 +322,7 @@ router.post("/bookapp", async (req, res) => {
             const y = { time: time, aval: 9, patient: obj }
             const newAppointment = new Appointment({ date, day, timings: y });
             const data = await newAppointment.save();
-            udata = await Patient.findOneAndUpdate({PID}, {$push : {appointments: uobj }}, {new:true});
+            udata = await Patient.findOneAndUpdate({ PID }, { $push: { appointments: uobj } }, { new: true });
             if (data && udata) {
                 res.status(201).json({ msg: "created successfully" });
             }
@@ -331,13 +333,13 @@ router.post("/bookapp", async (req, res) => {
     }
 })
 
-router.post('/latestAppoint', async (req,res) => {
+router.post('/latestAppoint', async (req, res) => {
     console.log("inside latest appoint");
-    try{
+    try {
         const PID = req.body.PID;
-        const data = await Patient.findOne({PID});
-        res.status(201).json(data.appointments[data.appointments.length-1])
-    }catch(err){
+        const data = await Patient.findOne({ PID });
+        res.status(201).json(data.appointments[data.appointments.length - 1])
+    } catch (err) {
         console.log(err);
     }
 })
@@ -362,11 +364,11 @@ router.post("/getLatestPrescription", async (req, res) => {
 
 router.post("/getAppointments", async (req, res) => {
     console.log("jkk");
-    try{
-        const {dx} = req.body;
-        const dateExists = await Appointment.findOne({date:dx});
-        if(!dateExists){
-            res.status(422).json({msg:"No Appointment"});
+    try {
+        const { dx } = req.body;
+        const dateExists = await Appointment.findOne({ date: dx });
+        if (!dateExists) {
+            res.status(422).json({ msg: "No Appointment" });
         }
         const sendData = [];
         dateExists.timings.map((val, idx) => {
@@ -381,13 +383,14 @@ router.post("/getAppointments", async (req, res) => {
     }
 })
 
- router.get("/logout", (req, res) => {
+router.get("/logout", (req, res) => {
     res.clearCookie("dwtoken", { path: "/" });
     res.status(200).send("user logout");
 });
 
 
 const { spawn } = require('child_process');
+const { log } = require("console");
 
 router.post('/pythondadta', (req, res) => {
     const pythonProcess = spawn('python', ['./Disease-Prediction-from-Symptoms-master/infer.py', req.body.selected]);
@@ -414,4 +417,13 @@ router.post('/pythondadta', (req, res) => {
     // console.log(req.body.selected);
 });
 
+router.post('/imageUpload', async (req, res) => {
+    // console.log("image");
+    console.log(req.body);
+    const id = req.body.id
+    const url = req.body.url;
+    const data = await Patient.findByIdAndUpdate(id, { $set: { url: url } }, { new: true }).select("-tokens")
+    console.log(data)
+    res.status(200).json({ data: data, success: true })
+})
 module.exports = router;

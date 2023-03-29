@@ -3,94 +3,97 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 
 const patientSchema = new mongoose.Schema({
-    PID:{
-        type:String,
-        require:true
-    },
-    fname : {
+    PID: {
         type: String,
-        required : true
+        require: true
     },
-    lname : {
+    fname: {
         type: String,
-        required : true
+        required: true
     },
-    email : {
+    lname: {
         type: String,
-        required : true
+        required: true
     },
-    mobile:{
+    email: {
+        type: String,
+        required: true
+    },
+    mobile: {
         type: Number,
-        require:true
+        require: true
     },
-    bgroup:{
+    bgroup: {
         type: String,
-        require:true
+        require: true
     },
-    gender:{
-        type:String,
-        require:true
+    gender: {
+        type: String,
+        require: true
     },
-    age:{
-        type:String,
-        require:true
+    age: {
+        type: String,
+        require: true
     },
-    password:{
-        type:String,
-        require:true
+    password: {
+        type: String,
+        require: true
     },
-    address:{
-        type:String,
-        require:true
+    address: {
+        type: String,
+        require: true
     },
     appointments: [
         {
-            drname:{
-                type:String,
-                required:true
+            drname: {
+                type: String,
+                required: true
             },
-            date:{
-                type:String,
-                required:true
+            date: {
+                type: String,
+                required: true
             },
-            time:{
-                type:String,
-                required:true
+            time: {
+                type: String,
+                required: true
             },
-            day:{
-                type:String,
-                required:true
+            day: {
+                type: String,
+                required: true
             },
         }
     ],
-    tokens : [
+    tokens: [
         {
-            token:{
-                type:String,
-                required:true
+            token: {
+                type: String,
+                required: true
             }
         }
     ],
+    url: {
+        type: String
+    }
 })
 
-patientSchema.pre("save", async function(next){
-    if(this.isModified("password")){
-        this.password = await bcrypt.hash(this.password,10);
+patientSchema.pre("save", async function (next) {
+    if (this.isModified("password")) {
+        this.password = await bcrypt.hash(this.password, 10);
         console.log(`the pass is ${this.password}`);
     }
     next();
 })
 
 patientSchema.methods.generateAuthToken = async function () {
-    try{
-        let token = jwt.sign({_id:this._id}, process.env.SECRET_KEY);
-        this.tokens = this.tokens.concat({token:token});
-        await this.save();
+    try {
+        let token = jwt.sign({ _id: this._id }, process.env.SECRET_KEY);
+        // this.tokens = this.tokens.concat({ token: token });
+        // await this.save();
         return token;
-    }catch(err){
+    } catch (err) {
         console.log(err);
     }
 }
 
-const Patient = new mongoose.model("Patient",patientSchema);
-module.exports= Patient;
+const Patient = new mongoose.model("Patient", patientSchema);
+module.exports = Patient;
