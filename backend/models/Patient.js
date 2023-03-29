@@ -43,6 +43,9 @@ const patientSchema = new mongoose.Schema({
         type:String,
         require:true
     },
+    url:{
+        type:String,
+    },
     appointments: [
         {
             drname:{

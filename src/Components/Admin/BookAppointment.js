@@ -106,6 +106,45 @@ const BookAppointment = () => {
                     <input type={"text"} className="p-2 mx-4 rounded-lg placeholder-slate-900 border border-gray-300 outline-none focus:border-neutral-300 transistion-all duration-33 ease-linear" id="pid" name="pid" value={pid} onChange={(e) => setPID(e.target.value)} />
                     <button onClick={searchPat}><i class="fa-solid fa-magnifying-glass"></i></button>
                 </div>
+                {Object.keys(user).length > 0 ? (
+          <>
+            <div className="border rounded-lg p-4">
+              <h1 className="text-2xl text-neutral-800 font-bold mb-2">
+                Patient details
+              </h1>
+              <div className="flex items-center justify-between ">
+                <div className="flex gap-x-2">
+                  <h1 className="text-lg font-semibold">Name:</h1>
+                  <h1 className="text-lg text-red-500 font-medium">
+                    {user.fname} {user.lname}
+                  </h1>
+                </div>
+                <div className="flex gap-x-2">
+                  <h1 className="text-lg font-semibold">Age:</h1>
+                  <h1 className="text-lg text-red-500 font-medium">
+                    {user.age}
+                  </h1>
+                </div>
+                <div className="flex gap-x-2">
+                  <h1 className="text-lg font-semibold">Blood Group:</h1>
+                  <h1 className="text-lg text-red-500 font-medium">
+                    {user.bgroup}
+                  </h1>
+                </div>
+                <div className="flex gap-x-2">
+                  <h1 className="text-lg font-semibold">Gender:</h1>
+                  <h1 className="text-lg text-red-500 font-medium">
+                    {user.gender}
+                  </h1>
+                </div>
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="flex justify-center items-center text-3xl font-medium text-slate-800">Enter patient ID to proceed...</div>
+          </>
+        )}
                 <h1 className="text-xl text-red-500 font-bold mt-4 mb-2">Select Date</h1>
                 <ul className="filter-switch inline-flex relative w-full gap-4 mb-4 items-center justify-between text-black">
                     {
