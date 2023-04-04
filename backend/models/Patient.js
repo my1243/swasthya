@@ -20,7 +20,7 @@ const patientSchema = new mongoose.Schema({
         required : true
     },
     mobile:{
-        type: Number,
+        type: String,
         require:true
     },
     bgroup:{
@@ -87,8 +87,6 @@ patientSchema.pre("save", async function(next){
 patientSchema.methods.generateAuthToken = async function () {
     try{
         let token = jwt.sign({_id:this._id}, process.env.SECRET_KEY);
-        this.tokens = this.tokens.concat({token:token});
-        await this.save();
         return token;
     }catch(err){
         console.log(err);
