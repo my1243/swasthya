@@ -15,12 +15,8 @@ const patientSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    email: {
-        type: String,
-        required: true
-    },
     mobile: {
-        type: Number,
+        type: String,
         require: true
     },
     bgroup: {
@@ -42,6 +38,9 @@ const patientSchema = new mongoose.Schema({
     address: {
         type: String,
         require: true
+    },
+    url: {
+        type: String,
     },
     appointments: [
         {
@@ -87,8 +86,6 @@ patientSchema.pre("save", async function (next) {
 patientSchema.methods.generateAuthToken = async function () {
     try {
         let token = jwt.sign({ _id: this._id }, process.env.SECRET_KEY);
-        // this.tokens = this.tokens.concat({ token: token });
-        // await this.save();
         return token;
     } catch (err) {
         console.log(err);

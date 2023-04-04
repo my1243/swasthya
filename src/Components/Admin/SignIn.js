@@ -45,6 +45,7 @@ const SignIn = (props) => {
               name={"email"}
               id={"email"}
                 value={user.email}
+                autoComplete="off"
               placeholder="Email Address"
               onChange={(e) => setUser({...user,email:e.target.value})}
             />
@@ -53,6 +54,7 @@ const SignIn = (props) => {
               type={"password"}
               name={"password"}
               id={"password"}
+              autoComplete="off"
               value={user.password}
               placeholder="Password"
               onChange={(e) => setUser({...user,password:e.target.value})}

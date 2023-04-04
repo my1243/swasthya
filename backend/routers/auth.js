@@ -160,13 +160,13 @@ router.post("/searchUser", async (req, res) => {
 router.post('/login', async (req, res) => {
     console.log("hi");
     try {
-        const pid = req.body.PatientID;
-        const pass = req.body.password1;
+        const pid = req.body.PatientID.trim();
+        const pass = req.body.password1.trim();
         if (!pid || !pass) {
             return res.status(400).json({ error: "Plz fill all details correctly" });
         }
-
-        const PatientExists = await Patient.findOne({ pid: pid }).select("-tokens");
+        console.log(pid + "  " + pass);
+        const PatientExists = await Patient.findOne({ PID: pid }).select("-tokens");
         if (PatientExists) {
             const isMatch = await bcrypt.compare(pass, PatientExists.password);
             if (!isMatch) {
@@ -393,6 +393,7 @@ const { spawn } = require('child_process');
 const { log } = require("console");
 
 router.post('/pythondadta', (req, res) => {
+    console.log("kjfgd")
     const pythonProcess = spawn('python', ['./Disease-Prediction-from-Symptoms-master/infer.py', req.body.selected]);
     // console.log(pythonProcess.stdout)
     var dataReceived = '';
@@ -417,13 +418,19 @@ router.post('/pythondadta', (req, res) => {
     // console.log(req.body.selected);
 });
 
-router.post('/imageUpload', async (req, res) => {
-    // console.log("image");
-    console.log(req.body);
-    const id = req.body.id
-    const url = req.body.url;
-    const data = await Patient.findByIdAndUpdate(id, { $set: { url: url } }, { new: true }).select("-tokens")
-    console.log(data)
-    res.status(200).json({ data: data, success: true })
+router.post("/imageUpload", async (req, res) => {
+    const { id, url } = req.body;
+    try {
+        const userFind = await Patient.findOneAndUpdate({ _id: id }, { url: url }, { new: true });
+        console.log(userFind);
+        if (userFind) {
+            res.status(201).json(userFind);
+        } else {
+            res.status(401).json({ msg: "Error while saving image" });
+        }
+    } catch (err) {
+        console.log(err);
+    }
 })
+
 module.exports = router;
