@@ -166,7 +166,7 @@ router.post('/login', async (req, res) => {
             return res.status(400).json({ error: "Plz fill all details correctly" });
         }
         console.log(pid + "  "+pass);
-        const PatientExists = await Patient.findOne({PID:pid});
+        const PatientExists = await Patient.findOne({PID:pid}).select("-tokens");
         if(PatientExists){
             const isMatch = await bcrypt.compare(pass,PatientExists.password);
             if(!isMatch){
