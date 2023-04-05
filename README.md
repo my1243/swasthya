@@ -1,70 +1,95 @@
-# Getting Started with Create React App
+﻿# Swasthya Healthcare Solution
+"Swasthya" website is used to refer to new Patients and doctors.Doctor can create a report based on the patient's disease, diagnosis and medicines.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Features
 
-## Available Scripts
+- <b>Admin</b> - Register new doctors, new patients, book appointments,update details.
+- <b>Doctor</b> - create a report, check the appointments.
 
-In the project directory, you can run:
+## Tech Stack
 
-### `npm start`
+Here we use these technical components :
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+<img src="https://img.shields.io/badge/react-v18-purple">
+<img src="https://img.shields.io/badge/Node-v16.15.0-yellow">
+<img src="https://img.shields.io/badge/Tailwind-v3.0.24-blue" alt="ruby version">
+<img src="https://img.shields.io/badge/Mongodb-v12.2.0-orange">
+<img src="https://img.shields.io/badge/Express-4.18.1-lightgrey">
 
-### `npm test`
+**Client:** React, React Native, TailwindCSS
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+**Server:** Node, Express, MongoDB
 
-### `npm run build`
+## Run Locally
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Clone the project
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```bash
+  git clone https://github.com/my1243/swasthya.git
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```
 
-### `npm run eject`
+## to start the SERVER
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Go to the project directory
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```bash
+  cd verifyIt-swasthya/backend
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Install dependencies
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```bash
+  npm install
+```
 
-## Learn More
+Run the project
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```bash
+  node Src/app.js
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Note : Make sure to add .env file for enviorment variables.
 
-### Code Splitting
+## to start the Client Application
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Go to the project directory
 
-### Analyzing the Bundle Size
+```bash
+  cd verifyIt-swasthya/src/App.js
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+Install dependencies
 
-### Making a Progressive Web App
+```bash
+  npm install
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## to start the Client Web ( Admin only )
 
-### Advanced Configuration
+Go to the project directory
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+```bash
+  cd verifyIt-Hackprints/client_Web
+```
 
-### Deployment
+Install dependencies
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+```bash
+  npm install
+```
 
-### `npm run build` fails to minify
+Run the project
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```bash
+  npm start
+```
+
+## Screenshots
+
+![App Screenshot](./1.jpg)
+![App Screenshot](./2.jpg)
+![App Screenshot](./3.jpg)
+![App Screenshot](./4.jpg)
+![App Screenshot](./5.jpg)
