@@ -104,7 +104,8 @@ const UserSearch = (props) => {
       <div className="m-4">
         <div className="h-16 flex mb-2 flex-row items-center gap-x-4 justify-center bg-gray-100 rounded-lg">
           <h3 className="text-xl">Search with patient's ID</h3>
-          <div className="rounded-md overflow-hidden">
+          <div className="rounded-md overflow-hidden flex">
+            <form onSubmit={postData}>
             <input
               type={"text"}
               id="ID"
@@ -113,6 +114,7 @@ const UserSearch = (props) => {
               onChange={(e) => setidx(e.target.value)}
               className="px-2 py-1 focus:outline-none"
             />
+            </form>
           <i
             onClick={postData}
             class="fa-solid fa-magnifying-glass bg-sky-200 hover:bg-sky-400 p-2"
