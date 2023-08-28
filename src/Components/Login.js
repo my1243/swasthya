@@ -5,6 +5,7 @@ import {
     validateCaptcha,
 } from "react-simple-captcha";
 import { UserContext } from "../App";
+import { dlogin } from "../api/doctor";
 const Login = (props) => {
     // const {state,dispatch} = useContext(UserContext);
     useEffect(() => {
@@ -31,20 +32,13 @@ const Login = (props) => {
             // alert("Captcha Matched");
             try{
                 const {email, password} = user;
-                const res = await fetch("/doctlogin", {
-                    method:"POST",
-                    headers:{
-                        "Content-Type":"Application/json"
-                    },
-                    body:JSON.stringify({email, password})
-                })
-                const data = await res.json();
-                if(res.status === 422 || !data){
-                    console.log("error");
-                }else{
+                
+                const data = await dlogin({email,password});
+                if(data?.success){
                     console.log(data);
-                    // dispatch({type:"USER", payload:true});
                     window.location = "/user-search";
+                }else{
+                    console.log("error");
                 }
             }catch(err){
                 console.log(err);

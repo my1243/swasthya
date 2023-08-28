@@ -30,7 +30,7 @@ router.get("/", (req, res) => {
 
 router.get("/dlogged", authenticate.authenticate1, (req, res) => {
     console.log("hello from logged");
-    res.status(200).json(req.rootUser);
+    res.status(200).json({data: req.rootUser , success:true, message: "Doctor Authenticated"});
 })
 
 router.get("/alogged", authenticate.authenticate2, (req, res) => {
@@ -147,10 +147,9 @@ router.post("/searchUser", async (req, res) => {
     try {
         const data = await Patient.findOne({ PID: idx });
         if (data) {
-            // console.log(data);
-            res.status(201).json(data);
+            res.status(201).json({data:data, message:"User found!", success:true});
         } else {
-            res.status(422).json({ "error": "Invalid credentials" });
+            res.status(422).json({ message:"error", error:"Invalid Credentials",success:false});
         }
     } catch (err) {
         console.log(err);
@@ -200,7 +199,7 @@ router.post('/doctlogin', async (req, res) => {
         const email = req.body.email;
         const password = req.body.password;
         if (!email || !password) {
-            return res.status(400).json({ error: "Plz fill all details correctly" });
+            return res.status(400).json({ error: "Plz fill all details correctly",success:false });
         }
 
         const doctorExists = await Doctor.findOne({ email: email });
@@ -208,7 +207,7 @@ router.post('/doctlogin', async (req, res) => {
             const isMatch = await bcrypt.compare(password, doctorExists.password);
 
             if (!isMatch) {
-                res.status(400).json({ error: "Invalid" });
+                res.status(400).json({ error: "Invalid",success:false });
             } else {
                 const token = await doctorExists.generateAuthToken();
                 console.log(token);
@@ -218,10 +217,10 @@ router.post('/doctlogin', async (req, res) => {
                     httpOnly: true
                 })
 
-                res.status(201).json(doctorExists);
+                res.status(201).json({message:"Logged in", success:true, data: doctorExists});
             }
         } else {
-            res.status(400).json({ error: "Invalid details" });
+            res.status(400).json({ error: "Invalid details", success:false });
         }
         console.log(doctorExists);
     } catch (err) {
@@ -262,27 +261,32 @@ router.post("/adminlog", async (req, res) => {
 })
 
 router.post("/prescribe", async (req, res) => {
-    console.log("hi");
-    try {
-        const { PID, fname, lname, prescription } = req.body;
-        const userExist = await Prescription.findOne({ PID });
-        if (userExist) {
-            const data = await Prescription.findOneAndUpdate({ PID }, { $push: { "prescription": prescription } });
-            if (data) {
-                res.status(201).json({ msg: "Updated successfully" });
-            }
-        } else {
-            const newPres = new Prescription({ PID, fname, lname, prescription });
-            const data = await newPres.save();
-            if (data) {
-                res.status(201).json({ msg: "Created successfully" });
-            }
-        }
-    } catch (err) {
-        res.status(400).json({ msg: "error" });
-        console.log(err);
+  console.log("hi");
+  try {
+    const { PID, fname, lname, prescription } = req.body;
+    console.log(req.body);
+    const userExist = await Prescription.findOne({ PID });
+    if (userExist) {
+      const data = await Prescription.findOneAndUpdate(
+        { PID },
+        { $push: { prescription: prescription } },
+        {new:true}
+      );
+      if (data) {
+        res.status(201).json({ message: "Updated successfully", data: data, success:true });
+      }
+    } else {
+      const newPres = new Prescription({ PID, fname, lname, prescription });
+      const data = await newPres.save();
+      if (data) {
+        res.status(201).json({ msg: "Created successfully", data: data, success:true });
+      }
     }
-})
+  } catch (err) {
+    res.status(400).json({ response: "error", data: err, success:false });
+    console.log(err);
+  }
+});
 
 router.post("/bookapp", async (req, res) => {
     console.log("hi");

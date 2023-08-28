@@ -1,24 +1,17 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { doctor_authentication, prescribe, searchUser } from "../api/doctor";
 
 const UserSearch = (props) => {
   const [idx, setidx] = useState("");
   const authenticate = async () => {
     try{
-        const res = await fetch("/dlogged", {
-            method:"GET",
-            headers:{
-                "Content-Type":"Application/json",
-                "Accept": "Application/json"
-            },
-            credentials:"include",
-        });
-
-        const data = await res.json();
-        if(!data || res.status !== 200){
-            throw new Error("can't authnticate");
+        const data = await doctor_authentication();
+        console.log(data);
+        if(data?.success){
+            props.setDoct(data.data);
         }else{
-            props.setDoct(data);
+            throw new Error("can't authnticate");
         }
     }catch(err){
         // setFlag(false);
@@ -55,41 +48,27 @@ const UserSearch = (props) => {
 
   const postData = async (e) => {
     e.preventDefault();
-    const res = await fetch("/searchUser", {
-      method: "POST",
-      headers: {
-        "Content-Type": "Application/json",
-      },
-      body: JSON.stringify({ idx }),
-    });
-    const data = await res.json();
-    if (res.status === 422 || !data) {
-      setUser({});
-      console.log("Invalid details");
+    const data = await searchUser({idx});
+    if (data?.success) {
+        setUser(data.data);
     } else {
-      setUser(data);
+        setUser({});
+        console.log(data.error);
     }
   };
 
   useEffect(() => {
     authenticate();
   },[]);
+
   const presData = async (e) => {
     e.preventDefault();
     const {PID,fname,lname} = user; 
     if(window.confirm("Confirm the medicines added!") === false){
         return;
     }
-    const res = await fetch("/prescribe", {
-        method:"POST",
-        headers:{
-            "Content-Type":"Application/json"
-        },
-        body: JSON.stringify({PID,fname,lname,prescription:MedicinesPres})
-    })
-
-    const data = await res.json();
-    if(res.status === 201 || data){
+    const data = await prescribe({PID,fname,lname,prescription:MedicinesPres});
+    if(data?.success){
         console.log(data);
         setMedicinesPres({});
         setUser({});

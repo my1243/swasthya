@@ -17,7 +17,6 @@ import Navbar from "./Components/Navbar";
 import NewPatient from "./Components/Admin/NewPatient";
 import UserSearch from "./Components/UserSearch";
 import { createContext, useReducer, useState } from "react";
-import { initialState, reducer } from "./Reducers/UseReduce";
 import Login from "./Components/Login";
 
 export const UserContext = createContext();
@@ -25,7 +24,6 @@ const App = () => {
     const [doct,setDoct] = useState({});
     const [flag,setFlag] = useState(false);
     // const [isLogin, setisLogin] = useState(false);
-    const [state,dispatch] = useReducer(reducer,initialState);
     return(
         <>
             <Router>
