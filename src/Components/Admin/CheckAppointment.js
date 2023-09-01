@@ -1,5 +1,6 @@
 import moment from "moment/moment";
 import { useState } from "react";
+import { getAllAppointments } from "../../api/admin";
 
 const CheckAppointment = () => {
     const [dt,setDt] = useState(new Date());
@@ -10,19 +11,13 @@ const CheckAppointment = () => {
         try{
             const dx = moment(date).format("M/D/YYYY");
             console.log(dx);
-            const res = await fetch("/getAppointments",{
-                headers:{
-                    "Content-Type":"Application/json"
-                },
-                method:"POST",
-                body:JSON.stringify({dx})
-            });
-            const data = await res.json();
-            if(!data || res.status === 422){
+            
+            const data = await getAllAppointments({dx});
+            if(!data?.success){
                 console.log("not found");
             }else{
                 console.log(data);
-                setPatients(data);
+                setPatients(data.data);
             }
         }catch(err){
             console.log(err);

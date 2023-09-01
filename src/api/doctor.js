@@ -1,8 +1,8 @@
-import client from "./client"
+import {doctor, patient} from "./client";
 
 export const prescribe = async (object) => {
     try{
-        const data = await client.post('/prescribe',object);
+        const data = await doctor.post('/prescribe',object);
         return data.data;
     }catch(err){
         const {response} = err;
@@ -15,7 +15,7 @@ export const prescribe = async (object) => {
 
 export const searchUser = async (object) => {
     try{
-        const data = await client.post('/searchUser',object);
+        const data = await patient.post('/searchUser',object);
         return data.data;
     }catch(err){
         const {response} = err;
@@ -28,7 +28,7 @@ export const searchUser = async (object) => {
 
 export const doctor_authentication = async () => {
     try{
-        const data = await client.get('/dlogged',{withCredentials:true});
+        const data = await doctor.get('/dlogged');
         return data.data;
     }catch(err){
         const {response} = err;
@@ -41,7 +41,7 @@ export const doctor_authentication = async () => {
 
 export const dlogin = async (object) => {
     try{
-        const data = await client.post('/doctlogin',object);
+        const data = await doctor.post('/doctlogin',object);
         return data.data;
     }catch(err){
         const {response} = err;
@@ -54,7 +54,7 @@ export const dlogin = async (object) => {
 
 export const dlogout = async () => {
     try{
-        const data = await client.get('/logout',{withCredentials:true});
+        const data = await doctor.get('/logout');
         return data.data;
     }catch(err){
         const {response} = err;

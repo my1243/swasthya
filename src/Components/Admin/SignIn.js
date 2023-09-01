@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { alogin } from "../../api/admin";
 
 const SignIn = (props) => {
     const [user,setUser] = useState({
@@ -10,20 +11,14 @@ const SignIn = (props) => {
         e.preventDefault();
         try{
             const {email, password} = user;
-            const res = await fetch("/adminlog",{
-                method:"POST",
-                headers:{
-                    "Content-Type":"Application/json"
-                },
-                body:JSON.stringify({email,password})
-            })
+           
 
-            const data = await res.json();
-            if(res.status === 400 || !data){
-                console.log("err");
-            }else{
-                // props.isadminlog(true);
+            const data = await alogin({email,password});
+            if(data?.success){
                 window.location = "/connect-admin/home";
+            }else{
+                console.log("err");
+                // props.isadminlog(true);
             }
         }catch(err){
             console.log(err);

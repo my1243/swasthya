@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { admin_authentication } from "../../api/admin";
 
 const Slidebar = () => {
   let commonClass =
@@ -7,22 +8,12 @@ const Slidebar = () => {
 
     const [user,setUser] = useState({});
     const authenticate = async () => {
-        try{
-            const res = await fetch("/alogged", {
-                method:"GET",
-                headers:{
-                    "Content-Type":"Application/json",
-                    "Accept": "Application/json"
-                },
-                // body:JSON.stringify({type:"Admin"}),
-                credentials:"include",
-            });
-    
-            const data = await res.json();
-            if(data){
-                setUser(data);
+        try{ 
+            const data = await admin_authentication();
+            if(data?.success){
+                setUser(data.data);
             }
-            if(res.status === 400){
+            else{
                 // return res.status;
                 throw new Error("admin credentials not matched");
             }

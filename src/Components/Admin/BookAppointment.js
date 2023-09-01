@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { searchUser } from "../../api/doctor";
+import { bookAppointment } from "../../api/admin";
 
 const BookAppointment = () => {
     const dayArr = [
@@ -57,18 +59,12 @@ const BookAppointment = () => {
     const searchPat = async (e) => {
         e.preventDefault();
         const idx = pid;
-        const res = await fetch("/searchUser", {
-            method: "POST",
-            headers: {
-                "Content-Type": "Application/json"
-            },
-            body: JSON.stringify({ idx })
-        });
-        const data = await res.json();
-        if (res.status === 422 || !data) {
+        
+        const data = await searchUser({idx})
+        if (!data?.success) {
             console.log("Invalid details");
         } else {
-            setUser(data);
+            setUser(data.data);
         }
     }
 
@@ -77,16 +73,9 @@ const BookAppointment = () => {
         const { PID, fname, lname, mobile } = user;
         const time = ttime;
         try {
-            const res = await fetch("/bookapp", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "Application/json"
-                },
-                body: JSON.stringify({ PID, fname, lname, mobile, day, date, time })
-            })
-            const data = await res.json();
-            if (!data || res.status === 400 || res.status === 404) {
-                console.log("Error: Appointment not booked");
+            const data = await bookAppointment({ PID, fname, lname, mobile, day, date, time });
+            if (!data?.success) {
+                console.log("dds");
             } else {
                 console.log("Appointment booked successfully");
             }

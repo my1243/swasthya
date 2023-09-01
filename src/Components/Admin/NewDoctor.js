@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { newDoctor } from "../../api/admin";
 
 const NewDoctor = () => {
     const [doctor,setDoctor] = useState({
@@ -23,16 +24,8 @@ let name,value;
         e.preventDefault();
         try{
             const {fname, lname, email,mobile,post,education,ig,ln} = doctor;
-            const res = await fetch("/doctsignup", {
-                method:"POST",
-                headers:{
-                    "Content-Type":"Application/json"
-                },
-                body:JSON.stringify({fname, lname, email,mobile,post,education,ig,ln})
-            })
-
-            const data = await res.json();
-            if(res.status===422 || !data){
+            const data = await newDoctor({fname, lname, email,mobile,post,education,ig,ln});
+            if(!data?.success){
                 console.log("Error");
             }else{
                 console.log("Success");

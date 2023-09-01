@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { newPatient } from "../../api/admin";
 
 const NewPatient = () => {    
     const [user,setUser] = useState({
@@ -28,18 +29,12 @@ const NewPatient = () => {
         const cpassword = e.cpassword;
         if(password === cpassword){
             const {fname,lname,email,password,mobile,bgroup,address,gender,age} = user;
-            const res = await fetch("/patSignup", {
-                method:"POST",
-                headers:{
-                    "Content-Type":"application/json"
-                },
-                body: JSON.stringify({
-                    fname, lname, email, password, mobile, bgroup, address, gender, age
-                })
-            });
-            const data = await res.json();
-            if(res.status === 422 || !data){
-                console.log("Invalid Data");
+            
+            const data = await newPatient({
+                fname, lname, email, password, mobile, bgroup, address, gender, age
+            })
+            if(!data?.success){
+                console.log(data.message);
 
             }  else{
                 console.log("data stored successfully");

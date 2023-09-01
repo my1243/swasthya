@@ -18,6 +18,7 @@ import NewPatient from "./Components/Admin/NewPatient";
 import UserSearch from "./Components/UserSearch";
 import { createContext, useReducer, useState } from "react";
 import Login from "./Components/Login";
+import Gra from "./Components/gra";
 
 export const UserContext = createContext();
 const App = () => {
@@ -53,6 +54,7 @@ const App = () => {
                     }>
                         <Route path="/user-search" element={<UserSearch setDoct = {setDoct}/>} />
                         <Route path="/" element={<Home/>} />
+                        <Route path="/gra" element={<Gra/>} />
                         <Route path="/login" element={<Login/>} />
                     </Route>
             </>
